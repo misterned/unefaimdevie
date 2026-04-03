@@ -34,9 +34,10 @@ p, li, td, th, label, input, textarea, select {
 }
 
 /* --- Navbar --- */
+nav.navbar,
 .navbar {
-  background-color: var(--bleu-maritime) !important;
-  border-bottom: 3px solid var(--sable-dore);
+  background-color: #3A5F78 !important;
+  border-bottom: 3px solid var(--sable-dore) !important;
 }
 
 .navbar .nav-link {
