@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Accueil - Une faim de vie au Croisic{% endblock %}
 
 {% block content %}
-<div class="hero">
-    <h1 class="display-6">Journal (presque) culturel du Croisic</h1>
-    <p class="lead mb-0">Webzine très souvent local, parfois sérieux, rarement ennuyeux.</p>
+<div class="hero d-md-flex justify-content-between align-items-center gap-4">
+    <div>
+        <h1 class="display-6">Journal (presque) culturel du Croisic</h1>
+        <p class="lead mb-0">Webzine très souvent local, parfois sérieux, rarement ennuyeux.</p>
+    </div>
+    <div class="text-md-end mt-3 mt-md-0">
+        <img src="{% static 'core/images/logo.png' %}" alt="Logo Une faim de vie" class="img-fluid" style="max-height: 130px; width: auto;">
+    </div>
 </div>
 
 <section class="mb-4">
