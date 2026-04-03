@@ -13,6 +13,26 @@
 
     <div class="mb-4">{{ post.body|linebreaks }}</div>
 
+    {% if post.video_url or post.notebook_html or post.video_file or post.powerbi_embed_code %}
+        <section class="mb-4">
+            <h2 class="h5 section-title">Ressources de l'article</h2>
+            <ul class="list-favicon list-favicon-md mb-0">
+                {% if post.video_url %}
+                    <li><a href="{{ post.video_url }}" target="_blank" rel="noopener">Voir la vidéo liée</a></li>
+                {% endif %}
+                {% if post.notebook_html %}
+                    <li><a href="{{ post.notebook_html.url }}" target="_blank" rel="noopener">Ouvrir le notebook rendu (HTML)</a></li>
+                {% endif %}
+                {% if post.video_file %}
+                    <li>Une vidéo intégrée est disponible plus bas dans la page.</li>
+                {% endif %}
+                {% if post.powerbi_embed_code %}
+                    <li>Un rapport Power BI est disponible plus bas dans la page.</li>
+                {% endif %}
+            </ul>
+        </section>
+    {% endif %}
+
     {% if post.video_url %}
         <section class="mb-4">
             <h2 class="h5">Vidéo</h2>
