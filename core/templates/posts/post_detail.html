@@ -4,7 +4,7 @@
 
 {% block content %}
 <article class="mb-4">
-    <h1 class="h2">{{ post.title }}</h1>
+    <h1 class="h2 section-title">{{ post.title }}</h1>
     <p class="text-muted">Par {{ post.author }} · {{ post.created_at|date:"d/m/Y H:i" }} · {{ post.category }}</p>
 
     {% if post.image %}
@@ -51,7 +51,7 @@
     {% if user.is_authenticated %}
         <a class="btn btn-primary" href="{% url 'post-comment' post.pk %}">Commenter</a>
     {% else %}
-        <a class="btn btn-primary" href="{% url 'login' %}">Connectez-vous pour commenter</a>
+        <a class="btn btn-outline-primary" href="{% url 'login' %}">Connectez-vous pour commenter</a>
     {% endif %}
 
     {% if user.is_staff or user.is_superuser %}
