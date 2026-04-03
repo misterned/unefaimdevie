@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Modération commentaires{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Commentaires en attente</h1>
+{% for comment in comments %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2 class="h6">{{ comment.post.title }}</h2>
+            <p class="text-muted small">{{ comment.author }} · {{ comment.created_at|date:"d/m/Y H:i" }}</p>
+            <p>{{ comment.content }}</p>
+            <div class="d-flex gap-2">
+                <form method="post" action="{% url 'moderation-comment-action' comment.pk 'approve' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-success btn-sm" type="submit">Valider</button>
+                </form>
+                <form method="post" action="{% url 'moderation-comment-action' comment.pk 'reject' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-danger btn-sm" type="submit">Rejeter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <p>Aucun commentaire à modérer.</p>
+{% endfor %}
+{% endblock %}

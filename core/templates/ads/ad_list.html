@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Publicités validées{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Publicités des commerçants</h1>
+<div class="row g-4">
+    {% for ad in ads %}
+        <div class="col-md-6">
+            <div class="card h-100">
+                {% if ad.image %}
+                    <img src="{{ ad.image.url }}" class="card-img-top" alt="{{ ad.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="h5">{{ ad.title }}</h2>
+                    <p class="text-muted small">{{ ad.merchant }}</p>
+                    <p>{{ ad.text }}</p>
+                    <p class="fw-bold">Tarif : {{ ad.price }} €</p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Aucune publicité validée pour le moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}

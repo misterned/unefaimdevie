@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Modération publicités{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Publicités en attente</h1>
+{% for ad in ads %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2 class="h5">{{ ad.title }}</h2>
+            <p class="text-muted small">Commerçant : {{ ad.merchant }} · Soumis par {{ ad.submitted_by }}</p>
+            <p>{{ ad.text }}</p>
+            <p class="fw-bold">Tarif : {{ ad.price }} €</p>
+            <div class="d-flex gap-2">
+                <form method="post" action="{% url 'moderation-ad-action' ad.pk 'approve' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-success btn-sm" type="submit">Valider</button>
+                </form>
+                <form method="post" action="{% url 'moderation-ad-action' ad.pk 'reject' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-danger btn-sm" type="submit">Rejeter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <p>Aucune publicité à modérer.</p>
+{% endfor %}
+{% endblock %}

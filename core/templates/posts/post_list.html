@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Articles - Une faim de vie au Croisic{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Articles publiés</h1>
+<div class="row g-4">
+    {% for post in posts %}
+        <div class="col-lg-6">
+            <article class="card h-100">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="h5">{{ post.title }}</h2>
+                    <p class="text-muted small">Par {{ post.author }} · {{ post.created_at|date:"d/m/Y H:i" }} · {{ post.category }}</p>
+                    <p>{{ post.body|truncatewords:30 }}</p>
+                    <a href="{% url 'post-detail' post.pk %}" class="btn btn-outline-primary btn-sm">Voir l'article</a>
+                </div>
+            </article>
+        </div>
+    {% empty %}
+        <p>Aucun article disponible.</p>
+    {% endfor %}
+</div>
+{% endblock %}

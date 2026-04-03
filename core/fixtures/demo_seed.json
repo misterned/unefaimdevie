@@ -1,0 +1,70 @@
+[
+  {
+    "model": "core.post",
+    "pk": 100,
+    "fields": {
+      "title": "Festival de musique traditionnelle",
+      "slug": "festival-musique-traditionnelle-croisic",
+      "author": ["animateur"],
+      "body": "Le Croisic accueille un festival autour des musiques traditionnelles avec ateliers, concerts et rencontres intergénérationnelles.",
+      "image": "",
+      "category": "Culture",
+      "status": "published",
+      "notebook_html": "",
+      "powerbi_embed_code": "",
+      "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "video_file": "",
+      "created_at": "2026-03-30T08:00:00Z",
+      "updated_at": "2026-03-30T08:00:00Z"
+    }
+  },
+  {
+    "model": "core.post",
+    "pk": 101,
+    "fields": {
+      "title": "Exposition maritime au port",
+      "slug": "exposition-maritime-port-croisic",
+      "author": ["animateur"],
+      "body": "Une exposition dédiée à l'histoire maritime locale est proposée avec archives, photographies et témoignages d'habitants.",
+      "image": "",
+      "category": "Patrimoine",
+      "status": "published",
+      "notebook_html": "",
+      "powerbi_embed_code": "<iframe title='PowerBI Demo' width='100%' height='500' src='https://app.powerbi.com/view?r=example' frameborder='0' allowFullScreen='true'></iframe>",
+      "video_url": "",
+      "video_file": "",
+      "created_at": "2026-03-30T09:00:00Z",
+      "updated_at": "2026-03-30T09:00:00Z"
+    }
+  },
+  {
+    "model": "core.advertisement",
+    "pk": 200,
+    "fields": {
+      "title": "Boulangerie du Port",
+      "merchant": "Boulangerie du Port",
+      "image": "",
+      "text": "Pain artisanal et viennoiseries maison. Offre spéciale marché du dimanche.",
+      "price": "29.90",
+      "status": "approved",
+      "submitted_by": ["commercant"],
+      "created_at": "2026-03-30T10:00:00Z",
+      "validated_at": "2026-03-30T10:15:00Z"
+    }
+  },
+  {
+    "model": "core.advertisement",
+    "pk": 201,
+    "fields": {
+      "title": "Atelier vélo local",
+      "merchant": "Atelier Vélo Croisicais",
+      "image": "",
+      "text": "Révision complète et réparations rapides. Réduction pour les étudiants.",
+      "price": "19.90",
+      "status": "pending",
+      "submitted_by": ["commercant"],
+      "created_at": "2026-03-30T11:00:00Z",
+      "validated_at": null
+    }
+  }
+]

@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: une-faim-de-vie-croisic
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt ; python manage.py collectstatic --noinput ; python manage.py migrate
+    startCommand: gunicorn croisicwebzine.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "une-faim-de-vie-croisic.onrender.com"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://une-faim-de-vie-croisic.onrender.com"
+      - key: DATABASE_URL
+        sync: false

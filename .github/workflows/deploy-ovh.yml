@@ -1,0 +1,24 @@
+name: Deploy OVH Mutualisé
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rsync and ssh
+        run: sudo apt-get update ; sudo apt-get install -y rsync openssh-client
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.OVH_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.OVH_HOST }} >> ~/.ssh/known_hosts
+      - name: Deploy with rsync
+        env:
+          OVH_HOST: ${{ secrets.OVH_HOST }}
+          OVH_USER: ${{ secrets.OVH_USER }}
+          OVH_PATH: ${{ secrets.OVH_PATH }}
+        run: bash deploy/ovh/deploy_ovh.sh

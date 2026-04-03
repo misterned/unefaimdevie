@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Édition article - Une faim de vie au Croisic{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Créer / modifier un article</h1>
+<form method="post" enctype="multipart/form-data" class="card card-body">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+</form>
+{% endblock %}

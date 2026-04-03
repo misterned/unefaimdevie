@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - Une faim de vie au Croisic{% endblock %}
+
+{% block content %}
+<article class="mb-4">
+    <h1 class="h2">{{ post.title }}</h1>
+    <p class="text-muted">Par {{ post.author }} · {{ post.created_at|date:"d/m/Y H:i" }} · {{ post.category }}</p>
+
+    {% if post.image %}
+        <img src="{{ post.image.url }}" class="img-fluid rounded mb-3" alt="{{ post.title }}">
+    {% endif %}
+
+    <div class="mb-4">{{ post.body|linebreaks }}</div>
+
+    {% if post.video_url %}
+        <section class="mb-4">
+            <h2 class="h5">Vidéo</h2>
+            <a href="{{ post.video_url }}" target="_blank" rel="noopener">Voir la vidéo</a>
+        </section>
+    {% endif %}
+
+    {% if post.video_file %}
+        <section class="mb-4">
+            <h2 class="h5">Vidéo intégrée</h2>
+            <video controls class="w-100">
+                <source src="{{ post.video_file.url }}">
+                Votre navigateur ne supporte pas la lecture vidéo.
+            </video>
+        </section>
+    {% endif %}
+
+    {% if post.notebook_html %}
+        <section class="mb-4">
+            <h2 class="h5">Notebook Python</h2>
+            <a href="{{ post.notebook_html.url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">Ouvrir le notebook rendu (HTML)</a>
+        </section>
+    {% endif %}
+
+    {% if post.powerbi_embed_code %}
+        <section class="mb-4">
+            <h2 class="h5">Rapport Power BI</h2>
+            <div class="ratio ratio-16x9">
+                {{ post.powerbi_embed_code|safe }}
+            </div>
+        </section>
+    {% endif %}
+</article>
+
+<div class="d-flex gap-2 mb-4">
+    {% if user.is_authenticated %}
+        <a class="btn btn-primary" href="{% url 'post-comment' post.pk %}">Commenter</a>
+    {% else %}
+        <a class="btn btn-primary" href="{% url 'login' %}">Connectez-vous pour commenter</a>
+    {% endif %}
+
+    {% if user.is_staff or user.is_superuser %}
+        <a class="btn btn-outline-secondary" href="{% url 'post-update' post.pk %}">Modifier l'article</a>
+    {% endif %}
+</div>
+
+<section>
+    <h2 class="h4">Commentaires validés</h2>
+    {% for comment in comments %}
+        <div class="border rounded p-3 mb-3">
+            <p class="mb-1"><strong>{{ comment.author }}</strong> <span class="text-muted small">{{ comment.created_at|date:"d/m/Y H:i" }}</span></p>
+            <p class="mb-0">{{ comment.content|linebreaks }}</p>
+        </div>
+    {% empty %}
+        <p>Aucun commentaire validé pour cet article.</p>
+    {% endfor %}
+</section>
+{% endblock %}
