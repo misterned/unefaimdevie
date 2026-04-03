@@ -95,6 +95,7 @@ nav.navbar,
 
 .btn-outline-primary:hover {
   background-color: var(--bleu-maritime);
+  border-color: var(--bleu-maritime);
   color: #fff;
 }
 
