@@ -194,3 +194,40 @@ footer {
   font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
 }
+
+/* --- Puces basées sur la favicon --- */
+.list-favicon {
+  list-style: none;
+  padding-left: 0;
+}
+
+.list-favicon li {
+  position: relative;
+  padding-left: 1.6rem;
+  margin-bottom: 0.45rem;
+}
+
+.list-favicon li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 12px;
+  height: 12px;
+  background: url('/static/core/images/puce-favicon-12.png') no-repeat center center;
+  background-size: contain;
+}
+
+.list-favicon-md li::before {
+  width: 16px;
+  height: 16px;
+  top: 0.25em;
+  background-image: url('/static/core/images/puce-favicon-16.png');
+}
+
+.list-favicon-lg li::before {
+  width: 20px;
+  height: 20px;
+  top: 0.15em;
+  background-image: url('/static/core/images/puce-favicon-20.png');
+}

@@ -8,6 +8,15 @@
     <p class="lead mb-0">Webzine très souvent local, parfois sérieux, rarement ennuyeux.</p>
 </div>
 
+<section class="mb-4">
+    <h2 class="h5 section-title">À la une</h2>
+    <ul class="list-favicon list-favicon-md">
+        <li>Événements et rendez-vous du Croisic</li>
+        <li>Initiatives locales et acteurs du territoire</li>
+        <li>Regards culturels, parfois sérieux, jamais figés</li>
+    </ul>
+</section>
+
 <h2 class="h4 section-title">Derniers articles</h2>
 <div class="row g-4">
     {% for post in posts|slice:":6" %}
@@ -28,4 +37,12 @@
         <p>Aucun article publié pour le moment.</p>
     {% endfor %}
 </div>
+
+<section class="mt-4">
+    <h2 class="h5 section-title">Explorer le webzine</h2>
+    <ul class="list-favicon list-favicon-lg">
+        <li><a href="{% url 'post-list' %}">Voir tous les articles</a></li>
+        <li><a href="{% url 'ad-list' %}">Découvrir les publicités locales</a></li>
+    </ul>
+</section>
 {% endblock %}
