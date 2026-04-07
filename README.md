@@ -5,8 +5,8 @@ Application Django de journal/webzine culturel local pour les habitants du Crois
 ## 1) Fonctionnalités couvertes
 
 - Publication d'articles par animateur/admin
-- Commentaires utilisateurs avec modération
-- Publicités commerçants payantes avec modération
+- Commentaires visiteurs avec modération
+- Publicités proposées par les visiteurs avec modération
 - Support des contenus enrichis sur les posts :
   - notebook Python (HTML pré-généré)
   - rapport Power BI (embed iframe)
@@ -51,18 +51,19 @@ Voir `.env.example`.
 ## 6) Gestion des rôles
 
 ### Visiteur
-- lecture seule des articles et publicités validées
-
-### Utilisateur authentifié
-- commenter les articles
-- soumettre des publicités
+- lecture des articles et publicités validées
+- dépôt de commentaires soumis à modération
+- soumission de publicités soumises à modération
 
 ### Animateur
 - créer/modifier des articles
-- modérer commentaires et publicités
+- modérer les commentaires déposés sur ses propres articles
+- modérer les publicités
 
 ### Admin
-- tous les droits Django
+- tous les droits Django et modération globale
+
+Les comptes animateurs sont créés par l'administration. Il n'existe pas d'inscription publique.
 
 > Recommandation : créer un groupe Django `animateur` et y ajouter les comptes animateurs.
 
@@ -73,12 +74,12 @@ Voir `.env.example`.
 - `/post/<id>/` : détail d'un post
 - `/post/create/` : création post (animateur/admin)
 - `/post/<id>/edit/` : modification post (animateur/admin)
-- `/post/<id>/comment/` : commentaire utilisateur connecté
-- `/moderation/comments/` : modération commentaires
+- `/post/<id>/comment/` : commentaire visiteur
+- `/moderation/comments/` : modération commentaires des articles de l'animateur
 - `/ads/` : publicités validées
 - `/ads/submit/` : soumission publicité
 - `/moderation/ads/` : modération publicités
-- `/login/`, `/logout/`
+- `/espace-animateur/connexion/`, `/logout/`
 
 ## 8) Déploiement
 
@@ -134,7 +135,7 @@ Le projet inclut :
 La commande :
 
 - crée le groupe `animateur`
-- crée/actualise les comptes `animateur`, `lecteur`, `commercant`
+- crée/actualise le compte `animateur`
 - charge les posts/publicités de démonstration depuis la fixture
 - crée des commentaires approuvés + en attente
 

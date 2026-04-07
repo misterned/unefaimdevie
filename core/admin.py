@@ -13,13 +13,21 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("post", "author", "status", "created_at")
+    list_display = ("post", "display_author", "status", "created_at")
     list_filter = ("status", "created_at")
-    search_fields = ("post__title", "author__username", "content")
+    search_fields = ("post__title", "author__username", "author_name", "author_email", "content")
+
+    @admin.display(description="Auteur")
+    def display_author(self, obj):
+        return obj.display_author
 
 
 @admin.register(Advertisement)
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ("title", "merchant", "price", "status", "created_at")
+    list_display = ("title", "merchant", "submitter_label", "price", "status", "created_at")
     list_filter = ("status", "created_at")
     search_fields = ("title", "merchant", "text")
+
+    @admin.display(description="Soumis par")
+    def submitter_label(self, obj):
+        return obj.submitter_label

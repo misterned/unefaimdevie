@@ -25,9 +25,7 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="{% url 'post-list' %}">Articles</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'ad-list' %}">Publicités</a></li>
-                {% if user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'ad-submit' %}">Espace commerçant</a></li>
-                {% endif %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'ad-submit' %}">Proposer une publicité</a></li>
                 {% if is_animateur %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'post-create' %}">Nouveau post</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'moderation-comments' %}">Modération commentaires</a></li>
@@ -38,8 +36,6 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item"><span class="navbar-text me-3">{{ user.username }}</span></li>
                     <li class="nav-item"><a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Déconnexion</a></li>
-                {% else %}
-                    <li class="nav-item"><a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Connexion</a></li>
                 {% endif %}
             </ul>
         </div>

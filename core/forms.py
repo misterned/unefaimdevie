@@ -29,10 +29,16 @@ class PostForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ["content"]
+        fields = ["author_name", "author_email", "content"]
         widgets = {
+            "author_name": forms.TextInput(attrs={"placeholder": "Votre nom"}),
+            "author_email": forms.EmailInput(attrs={"placeholder": "Votre email (optionnel)"}),
             "content": forms.Textarea(attrs={"rows": 4, "placeholder": "Votre commentaire"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["author_email"].required = False
 
 
 class AdvertisementForm(forms.ModelForm):

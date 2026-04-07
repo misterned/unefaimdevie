@@ -4,7 +4,8 @@
 
 {% block content %}
 <h1 class="h3 mb-4">Proposer un commentaire</h1>
-<p class="text-muted">Votre commentaire sera publié après validation par un animateur.</p>
+<p class="text-muted">Article concerné : {{ post.title }}</p>
+<p class="text-muted">Votre commentaire sera publié après validation par un modérateur.</p>
 <form method="post" class="card card-body">
     {% csrf_token %}
     {{ form.as_p }}

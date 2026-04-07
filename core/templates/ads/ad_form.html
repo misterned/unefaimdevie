@@ -3,8 +3,8 @@
 {% block title %}Soumettre une publicité{% endblock %}
 
 {% block content %}
-<h1 class="h3 mb-4">Espace commerçant</h1>
-<p class="text-muted">Soumettez votre publicité. Elle sera validée avant publication.</p>
+<h1 class="h3 mb-4">Proposer une publicité</h1>
+<p class="text-muted">Soumettez votre publicité sans créer de compte. Elle sera validée avant publication.</p>
 <form method="post" enctype="multipart/form-data" class="card card-body">
     {% csrf_token %}
     {{ form.as_p }}

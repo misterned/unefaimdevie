@@ -8,7 +8,7 @@
     <div class="card mb-3">
         <div class="card-body">
             <h2 class="h6">{{ comment.post.title }}</h2>
-            <p class="text-muted small">{{ comment.author }} · {{ comment.created_at|date:"d/m/Y H:i" }}</p>
+            <p class="text-muted small">{{ comment.display_author }} · {{ comment.created_at|date:"d/m/Y H:i" }}</p>
             <p>{{ comment.content }}</p>
             <div class="d-flex gap-2">
                 <form method="post" action="{% url 'moderation-comment-action' comment.pk 'approve' %}">

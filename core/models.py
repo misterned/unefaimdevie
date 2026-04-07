@@ -5,6 +5,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
+from .services import get_user_identifier
+
 
 class Post(models.Model):
     class Status(models.TextChoices):
@@ -69,7 +71,15 @@ class Comment(models.Model):
         REJECTED = "rejected", "Rejeté"
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments")
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="comments",
+        blank=True,
+        null=True,
+    )
+    author_name = models.CharField("Nom", max_length=120, default="")
+    author_email = models.EmailField("Email", blank=True)
     content = models.TextField(max_length=1000)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -78,7 +88,15 @@ class Comment(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Commentaire de {self.author} sur {self.post}"
+        return f"Commentaire de {self.display_author} sur {self.post}"
+
+    @property
+    def display_author(self):
+        if self.author_id:
+            return get_user_identifier(self.author)
+        if self.author_name:
+            return self.author_name
+        return "Visiteur"
 
 
 class Advertisement(models.Model):
@@ -95,8 +113,10 @@ class Advertisement(models.Model):
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
     submitted_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="advertisements",
+        blank=True,
+        null=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     validated_at = models.DateTimeField(blank=True, null=True)
@@ -106,3 +126,9 @@ class Advertisement(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.merchant})"
+
+    @property
+    def submitter_label(self):
+        if self.submitted_by_id:
+            return get_user_identifier(self.submitted_by)
+        return self.merchant

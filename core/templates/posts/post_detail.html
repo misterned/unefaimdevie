@@ -68,13 +68,9 @@
 </article>
 
 <div class="d-flex gap-2 mb-4">
-    {% if user.is_authenticated %}
-        <a class="btn btn-primary" href="{% url 'post-comment' post.pk %}">Commenter</a>
-    {% else %}
-        <a class="btn btn-outline-primary" href="{% url 'login' %}">Connectez-vous pour commenter</a>
-    {% endif %}
+    <a class="btn btn-primary" href="{% url 'post-comment' post.pk %}">Commenter</a>
 
-    {% if user.is_staff or user.is_superuser %}
+    {% if can_edit_post %}
         <a class="btn btn-outline-secondary" href="{% url 'post-update' post.pk %}">Modifier l'article</a>
     {% endif %}
 </div>
@@ -83,7 +79,7 @@
     <h2 class="h4">Commentaires validés</h2>
     {% for comment in comments %}
         <div class="border rounded p-3 mb-3">
-            <p class="mb-1"><strong>{{ comment.author }}</strong> <span class="text-muted small">{{ comment.created_at|date:"d/m/Y H:i" }}</span></p>
+            <p class="mb-1"><strong>{{ comment.display_author }}</strong> <span class="text-muted small">{{ comment.created_at|date:"d/m/Y H:i" }}</span></p>
             <p class="mb-0">{{ comment.content|linebreaks }}</p>
         </div>
     {% empty %}
