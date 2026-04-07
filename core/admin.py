@@ -24,10 +24,7 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Advertisement)
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ("title", "merchant", "submitter_label", "price", "status", "created_at")
-    list_filter = ("status", "created_at")
+    list_display = ("title", "merchant", "featured", "status", "price", "created_at")
+    list_editable = ["featured", "status"]
+    list_filter = ("featured", "status", "created_at")
     search_fields = ("title", "merchant", "text")
-
-    @admin.display(description="Soumis par")
-    def submitter_label(self, obj):
-        return obj.submitter_label

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Advertisement, Comment, Post
+from .models import Comment, Post
 
 
 class PostForm(forms.ModelForm):
@@ -41,7 +41,4 @@ class CommentForm(forms.ModelForm):
         self.fields["author_email"].required = False
 
 
-class AdvertisementForm(forms.ModelForm):
-    class Meta:
-        model = Advertisement
-        fields = ["title", "merchant", "image", "text", "price"]
+

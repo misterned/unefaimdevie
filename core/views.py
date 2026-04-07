@@ -2,11 +2,10 @@ from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
-from django.utils import timezone
 from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from .forms import AdvertisementForm, CommentForm, PostForm
+from .forms import CommentForm, PostForm
 from .models import Advertisement, Comment, Post
 from .services import (
     can_manage_post,
@@ -29,6 +28,13 @@ class HomeView(ListView):
 
     def get_queryset(self):
         return Post.objects.filter(status=Post.Status.PUBLISHED)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["featured_ad"] = Advertisement.objects.filter(
+            status=Advertisement.Status.APPROVED, featured=True
+        ).first()
+        return context
 
 
 class PostListView(ListView):
@@ -147,25 +153,6 @@ class CommentModerationActionView(AnimateurRequiredMixin, View):
         return redirect("moderation-comments")
 
 
-class AdvertisementCreateView(CreateView):
-    model = Advertisement
-    form_class = AdvertisementForm
-    template_name = "ads/ad_form.html"
-
-    def form_valid(self, form):
-        if self.request.user.is_authenticated:
-            form.instance.submitted_by = self.request.user
-        form.instance.status = Advertisement.Status.PENDING
-        messages.info(
-            self.request,
-            "Publicité soumise. Elle sera visible après validation par un modérateur.",
-        )
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return "/ads/"
-
-
 class AdvertisementListView(ListView):
     model = Advertisement
     template_name = "ads/ad_list.html"
@@ -175,26 +162,4 @@ class AdvertisementListView(ListView):
         return Advertisement.objects.filter(status=Advertisement.Status.APPROVED)
 
 
-class AdvertisementModerationListView(AnimateurRequiredMixin, ListView):
-    model = Advertisement
-    template_name = "ads/moderation_ads.html"
-    context_object_name = "ads"
 
-    def get_queryset(self):
-        return Advertisement.objects.filter(status=Advertisement.Status.PENDING)
-
-
-class AdvertisementModerationActionView(AnimateurRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        ad = get_object_or_404(Advertisement, pk=kwargs["pk"])
-        action = kwargs["action"]
-        if action == "approve":
-            ad.status = Advertisement.Status.APPROVED
-            ad.validated_at = timezone.now()
-            message = "Publicité validée."
-        else:
-            ad.status = Advertisement.Status.REJECTED
-            message = "Publicité rejetée."
-        ad.save(update_fields=["status", "validated_at"])
-        messages.success(request, message)
-        return redirect("moderation-ads")

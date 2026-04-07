@@ -25,11 +25,9 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="{% url 'post-list' %}">Articles</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'ad-list' %}">Publicités</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'ad-submit' %}">Proposer une publicité</a></li>
                 {% if is_animateur %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'post-create' %}">Nouveau post</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'moderation-comments' %}">Modération commentaires</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'moderation-ads' %}">Modération publicités</a></li>
                 {% endif %}
             </ul>
             <ul class="navbar-nav ms-auto">

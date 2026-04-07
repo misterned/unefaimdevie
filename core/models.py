@@ -101,25 +101,18 @@ class Comment(models.Model):
 
 class Advertisement(models.Model):
     class Status(models.TextChoices):
-        PENDING = "pending", "En attente"
-        APPROVED = "approved", "Validé"
-        REJECTED = "rejected", "Rejeté"
+        PENDING = "pending", "Brouillon"
+        APPROVED = "approved", "Visible"
+        REJECTED = "rejected", "Archivée"
 
     title = models.CharField(max_length=150)
     merchant = models.CharField(max_length=120)
     image = models.ImageField(upload_to="ads/images/", blank=True, null=True)
     text = models.TextField(max_length=1200)
     price = models.DecimalField(max_digits=8, decimal_places=2)
+    featured = models.BooleanField("À la une", default=False)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
-    submitted_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        related_name="advertisements",
-        blank=True,
-        null=True,
-    )
     created_at = models.DateTimeField(auto_now_add=True)
-    validated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -127,8 +120,7 @@ class Advertisement(models.Model):
     def __str__(self):
         return f"{self.title} ({self.merchant})"
 
-    @property
-    def submitter_label(self):
-        if self.submitted_by_id:
-            return get_user_identifier(self.submitted_by)
-        return self.merchant
+    def save(self, *args, **kwargs):
+        if self.featured:
+            Advertisement.objects.filter(featured=True).exclude(pk=self.pk).update(featured=False)
+        super().save(*args, **kwargs)
