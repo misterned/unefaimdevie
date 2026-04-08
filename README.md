@@ -83,13 +83,6 @@ Les comptes animateurs sont créés par l'administration. Il n'existe pas d'insc
 
 ## 8) Déploiement
 
-### Render
-
-- Fichier `render.yaml` inclus
-- Build: installation deps, collectstatic, migrate
-- Start: gunicorn
-- Déploiement auto possible via hook GitHub Action (`deploy-render.yml`)
-
 ### Azure App Service
 
 - Workflow `.github/workflows/deploy-azure.yml`
@@ -109,7 +102,6 @@ Les comptes animateurs sont créés par l'administration. Il n'existe pas d'insc
 ## 9) CI/CD
 
 - `ci.yml` : check Django + migrations + tests
-- `deploy-render.yml` : déclenchement Render via deploy hook
 - `deploy-azure.yml` : déploiement Azure
 - `deploy-ovh.yml` : déploiement OVH manuel
 

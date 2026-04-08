@@ -13,7 +13,6 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     ".azurewebsites.net",
-    os.environ.get("RENDER_EXTERNAL_HOSTNAME", ""),
 ]
 
 extra_hosts = os.environ.get("ALLOWED_HOSTS", "")
