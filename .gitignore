@@ -1,5 +1,4 @@
 .venv/
-.venv-1/
 .env
 .env.*
 *.sqlite3
