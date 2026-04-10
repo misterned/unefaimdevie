@@ -7,6 +7,18 @@ cd /home/site/wwwroot
 echo "[startup] pwd=$(pwd)"
 echo "[startup] PORT=${PORT:-unset}"
 
+if [ -f "/home/site/wwwroot/antenv/bin/activate" ]; then
+	echo "[startup] activating /home/site/wwwroot/antenv"
+	# shellcheck disable=SC1091
+	. /home/site/wwwroot/antenv/bin/activate
+elif [ -f "/antenv/bin/activate" ]; then
+	echo "[startup] activating /antenv"
+	# shellcheck disable=SC1091
+	. /antenv/bin/activate
+else
+	echo "[startup] no antenv virtual environment found"
+fi
+
 # Prefer python3 when available, fallback to python.
 PYTHON_BIN="python3"
 if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
