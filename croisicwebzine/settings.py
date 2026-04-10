@@ -35,6 +35,9 @@ INSTALLED_APPS = [
     'core',
 ]
 
+if os.environ.get("AZURE_STORAGE_ACCOUNT_NAME") and os.environ.get("AZURE_STORAGE_CONTAINER"):
+    INSTALLED_APPS.append("storages")
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
 
@@ -136,14 +139,54 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "core" / "static"]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+use_azure_blob_media = bool(
+    os.environ.get("AZURE_STORAGE_ACCOUNT_NAME") and os.environ.get("AZURE_STORAGE_CONTAINER")
+)
 
-MEDIA_URL = '/media/'
-default_media_root = BASE_DIR / "media"
-if not DEBUG and os.environ.get("WEBSITE_SITE_NAME"):
-    # Azure App Service persistent writable path.
-    default_media_root = Path("/home/site/wwwroot/media")
-MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", str(default_media_root)))
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    }
+}
+
+if use_azure_blob_media:
+    azure_account_name = os.environ["AZURE_STORAGE_ACCOUNT_NAME"]
+    azure_container = os.environ["AZURE_STORAGE_CONTAINER"]
+    azure_custom_domain = os.environ.get("AZURE_STORAGE_CUSTOM_DOMAIN", "")
+
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.azure_storage.AzureStorage",
+        "OPTIONS": {
+            "account_name": azure_account_name,
+            "account_key": os.environ.get("AZURE_STORAGE_ACCOUNT_KEY", ""),
+            "connection_string": os.environ.get("AZURE_STORAGE_CONNECTION_STRING", ""),
+            "azure_container": azure_container,
+            "custom_domain": azure_custom_domain,
+            "overwrite_files": False,
+        },
+    }
+
+    if azure_custom_domain:
+        MEDIA_URL = f"https://{azure_custom_domain}/"
+    else:
+        MEDIA_URL = f"https://{azure_account_name}.blob.core.windows.net/{azure_container}/"
+
+    # Not used by Azure backend, but kept for compatibility with code expecting MEDIA_ROOT.
+    MEDIA_ROOT = BASE_DIR / "media"
+else:
+    STORAGES["default"] = {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": str(BASE_DIR / "media"),
+            "base_url": "/media/",
+        },
+    }
+    MEDIA_URL = '/media/'
+    default_media_root = BASE_DIR / "media"
+    if not DEBUG and os.environ.get("WEBSITE_SITE_NAME"):
+        # Azure App Service persistent writable path.
+        default_media_root = Path("/home/site/wwwroot/media")
+    MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", str(default_media_root)))
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
