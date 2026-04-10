@@ -139,7 +139,11 @@ STATICFILES_DIRS = [BASE_DIR / "core" / "static"]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "media"
+default_media_root = BASE_DIR / "media"
+if not DEBUG and os.environ.get("WEBSITE_SITE_NAME"):
+    # Azure App Service persistent writable path.
+    default_media_root = Path("/home/site/wwwroot/media")
+MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", str(default_media_root)))
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
