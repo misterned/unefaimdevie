@@ -122,10 +122,15 @@ elif os.environ.get("POSTGRES_DB"):
         }
     }
 else:
+    sqlite_path = BASE_DIR / 'db.sqlite3'
+    if _env_str("WEBSITE_SITE_NAME") and not DEBUG:
+        # Azure App Service: keep SQLite on persistent storage, not on temp extracted path.
+        sqlite_path = Path("/home/site/wwwroot/db.sqlite3")
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': sqlite_path,
         }
     }
 
