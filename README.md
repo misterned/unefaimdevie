@@ -48,6 +48,27 @@ Voir `.env.example`.
 - `CSRF_TRUSTED_ORIGINS`
 - `DATABASE_URL` (prioritaire) ou variables PostgreSQL `POSTGRES_*`
 
+### Azure Blob (media en production)
+
+Pour stocker les images/fichiers dans Azure Blob Storage, configurez dans App Service:
+
+- `AZURE_STORAGE_ACCOUNT_NAME` (ex: `unefaimdeviemedia`)
+- `AZURE_STORAGE_CONTAINER` (ex: `media`)
+- `AZURE_STORAGE_CONNECTION_STRING` (connection string complète du Storage Account)
+- `USE_AZURE_BLOB_MEDIA=true` (recommandé pour forcer le mode Blob)
+
+Notes:
+
+- `USE_AZURE_BLOB_MEDIA=true` force l'utilisation d'Azure Blob même si vos variables changent plus tard.
+- Un redémarrage de l'App Service est nécessaire après modification des App Settings.
+- Vérification rapide:
+
+```bash
+python manage.py shell -c "from django.conf import settings; print(settings.STORAGES['default']['BACKEND']); print(settings.MEDIA_URL)"
+```
+
+Le backend attendu est `storages.backends.azure_storage.AzureStorage`.
+
 ## 6) Gestion des rôles
 
 ### Visiteur

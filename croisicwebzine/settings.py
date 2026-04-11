@@ -5,9 +5,18 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret-key")
 
-DEBUG = os.environ.get("DEBUG", "True") == "True"
+def _env_str(name: str, default: str = "") -> str:
+    return os.environ.get(name, default).strip()
+
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    value = _env_str(name, "1" if default else "0").lower()
+    return value in {"1", "true", "yes", "on"}
+
+SECRET_KEY = _env_str("DJANGO_SECRET_KEY", "dev-secret-key")
+
+DEBUG = _env_bool("DEBUG", True)
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -15,9 +24,23 @@ ALLOWED_HOSTS = [
     ".azurewebsites.net",
 ]
 
-extra_hosts = os.environ.get("ALLOWED_HOSTS", "")
+extra_hosts = _env_str("ALLOWED_HOSTS", "")
 if extra_hosts:
     ALLOWED_HOSTS.extend([h.strip() for h in extra_hosts.split(",") if h.strip()])
+
+azure_account_name = _env_str("AZURE_STORAGE_ACCOUNT_NAME")
+azure_container = _env_str("AZURE_STORAGE_CONTAINER")
+azure_custom_domain = _env_str("AZURE_STORAGE_CUSTOM_DOMAIN")
+
+# Legacy aliases kept for compatibility with older app settings naming.
+if not azure_account_name:
+    azure_account_name = _env_str("AZURE_ACCOUNT_NAME")
+if not azure_container:
+    azure_container = _env_str("AZURE_CONTAINER")
+
+azure_media_enabled = _env_bool("USE_AZURE_BLOB_MEDIA", False) or bool(
+    azure_account_name and azure_container
+)
 
 # -------------------------------------------------------------
 # APPLICATIONS
@@ -35,7 +58,7 @@ INSTALLED_APPS = [
     'core',
 ]
 
-if os.environ.get("AZURE_STORAGE_ACCOUNT_NAME") and os.environ.get("AZURE_STORAGE_CONTAINER"):
+if azure_media_enabled:
     INSTALLED_APPS.append("storages")
 
 MIDDLEWARE = [
@@ -139,27 +162,20 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "core" / "static"]
 
-use_azure_blob_media = bool(
-    os.environ.get("AZURE_STORAGE_ACCOUNT_NAME") and os.environ.get("AZURE_STORAGE_CONTAINER")
-)
-
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     }
 }
 
-if use_azure_blob_media:
-    azure_account_name = os.environ["AZURE_STORAGE_ACCOUNT_NAME"]
-    azure_container = os.environ["AZURE_STORAGE_CONTAINER"]
-    azure_custom_domain = os.environ.get("AZURE_STORAGE_CUSTOM_DOMAIN", "")
+if azure_media_enabled:
 
     STORAGES["default"] = {
         "BACKEND": "storages.backends.azure_storage.AzureStorage",
         "OPTIONS": {
             "account_name": azure_account_name,
-            "account_key": os.environ.get("AZURE_STORAGE_ACCOUNT_KEY", ""),
-            "connection_string": os.environ.get("AZURE_STORAGE_CONNECTION_STRING", ""),
+            "account_key": _env_str("AZURE_STORAGE_ACCOUNT_KEY"),
+            "connection_string": _env_str("AZURE_STORAGE_CONNECTION_STRING"),
             "azure_container": azure_container,
             "custom_domain": azure_custom_domain,
             "overwrite_files": False,
@@ -183,21 +199,21 @@ else:
     }
     MEDIA_URL = '/media/'
     default_media_root = BASE_DIR / "media"
-    if not DEBUG and os.environ.get("WEBSITE_SITE_NAME"):
+    if not DEBUG and _env_str("WEBSITE_SITE_NAME"):
         # Azure App Service persistent writable path.
         default_media_root = Path("/home/site/wwwroot/media")
-    MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", str(default_media_root)))
+    MEDIA_ROOT = Path(_env_str("MEDIA_ROOT", str(default_media_root)))
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
-    for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+    for origin in _env_str("CSRF_TRUSTED_ORIGINS", "").split(",")
     if origin.strip()
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "False") == "True"
-SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "False") == "True"
-CSRF_COOKIE_SECURE = os.environ.get("CSRF_COOKIE_SECURE", "False") == "True"
+SECURE_SSL_REDIRECT = _env_bool("SECURE_SSL_REDIRECT", False)
+SESSION_COOKIE_SECURE = _env_bool("SESSION_COOKIE_SECURE", False)
+CSRF_COOKIE_SECURE = _env_bool("CSRF_COOKIE_SECURE", False)
 
 # -------------------------------------------------------------
 # CONFIGURATION EMAIL (pour notifications/modération)
