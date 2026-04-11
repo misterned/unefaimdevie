@@ -4,6 +4,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from urllib.parse import urlparse
 
 from .services import get_user_identifier
 
@@ -45,12 +46,34 @@ class Post(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
+    @staticmethod
+    def _normalize_media_name(name: str) -> str:
+        if not name:
+            return name
+
+        normalized = name.strip()
+
+        if normalized.startswith("http://") or normalized.startswith("https://"):
+            parsed = urlparse(normalized)
+            normalized = parsed.path or normalized
+
+        if normalized.startswith("/media/"):
+            normalized = normalized[len("/media/") :]
+        elif normalized.startswith("media/"):
+            normalized = normalized[len("media/") :]
+
+        return normalized
+
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
+        if self.image and getattr(self.image, "name", None):
+            self.image.name = self._normalize_media_name(self.image.name)
+
         super().save(*args, **kwargs)
 
     def clean(self):
