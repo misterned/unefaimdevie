@@ -7,6 +7,11 @@ from django.views.static import serve
 
 from core.views import HomeView
 
+uses_filesystem_media = (
+    settings.STORAGES.get("default", {}).get("BACKEND")
+    == "django.core.files.storage.FileSystemStorage"
+)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", HomeView.as_view(), name="home"),
@@ -21,8 +26,8 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
-    # Small deployment fallback: serve uploaded media files through Django.
+elif uses_filesystem_media:
+    # Filesystem fallback only when local media storage is configured.
     urlpatterns += [
         re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
     ]

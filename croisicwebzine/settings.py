@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +42,8 @@ if not azure_container:
 azure_media_enabled = _env_bool("USE_AZURE_BLOB_MEDIA", False) or bool(
     azure_account_name and azure_container
 )
+
+is_azure_app_service = bool(_env_str("WEBSITE_SITE_NAME"))
 
 # -------------------------------------------------------------
 # APPLICATIONS
@@ -190,6 +193,13 @@ if azure_media_enabled:
     # Not used by Azure backend, but kept for compatibility with code expecting MEDIA_ROOT.
     MEDIA_ROOT = BASE_DIR / "media"
 else:
+    if is_azure_app_service and not DEBUG:
+        raise ImproperlyConfigured(
+            "Azure App Service production requires Azure Blob media storage. "
+            "Set USE_AZURE_BLOB_MEDIA=true and configure AZURE_STORAGE_ACCOUNT_NAME, "
+            "AZURE_STORAGE_CONTAINER, and AZURE_STORAGE_CONNECTION_STRING (or account key)."
+        )
+
     STORAGES["default"] = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
@@ -203,6 +213,15 @@ else:
         # Azure App Service persistent writable path.
         default_media_root = Path("/home/site/wwwroot/media")
     MEDIA_ROOT = Path(_env_str("MEDIA_ROOT", str(default_media_root)))
+
+if azure_media_enabled:
+    azure_connection_string = _env_str("AZURE_STORAGE_CONNECTION_STRING")
+    azure_account_key = _env_str("AZURE_STORAGE_ACCOUNT_KEY")
+    if not azure_connection_string and not azure_account_key:
+        raise ImproperlyConfigured(
+            "Azure Blob storage enabled but no credentials found. "
+            "Set AZURE_STORAGE_CONNECTION_STRING or AZURE_STORAGE_ACCOUNT_KEY."
+        )
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()

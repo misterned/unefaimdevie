@@ -60,6 +60,8 @@ Pour stocker les images/fichiers dans Azure Blob Storage, configurez dans App Se
 Notes:
 
 - `USE_AZURE_BLOB_MEDIA=true` force l'utilisation d'Azure Blob même si vos variables changent plus tard.
+- En production sur Azure App Service (`WEBSITE_SITE_NAME` défini et `DEBUG=False`), le projet échoue au démarrage si le Blob n'est pas configuré (comportement volontaire pour éviter les erreurs silencieuses).
+- Fournir au moins un mode d'authentification Blob: `AZURE_STORAGE_CONNECTION_STRING` ou `AZURE_STORAGE_ACCOUNT_KEY`.
 - Un redémarrage de l'App Service est nécessaire après modification des App Settings.
 - Vérification rapide:
 
