@@ -83,7 +83,7 @@ jobs:
 
       - name: Verify artifact content
         run: |
-          echo "artifact_commit_check=$(grep -n \"Que trouverez vous ici ?\" core/templates/home.html || true)"
+          echo "artifact_commit_check=$(grep -nF 'Que trouverez vous ici ?' core/templates/home.html || true)"
           echo "artifact_home_preview:"
           sed -n '1,40p' core/templates/home.html
 
@@ -95,4 +95,13 @@ jobs:
           slot-name: 'Production'
           package: .
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+      - name: Verify live homepage content
+        run: |
+          curl -fsSL "https://unefaimdevie.azurewebsites.net/" -o live_home.html
+          echo "live_home_match=$(grep -nF 'Que trouverez vous ici ?' live_home.html || true)"
+          if ! grep -qF 'Que trouverez vous ici ?' live_home.html; then
+            echo "Live site does not contain expected text after deployment"
+            exit 1
+          fi
           
