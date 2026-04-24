@@ -87,19 +87,62 @@ jobs:
           echo "artifact_home_preview:"
           sed -n '1,40p' core/templates/home.html
 
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
+      - name: Create deployment archive
+        run: |
+          rm -f deploy.zip
+          zip -q -r deploy.zip . -x "deploy.zip"
+
+      - name: Parse publish profile
+        id: publish-profile
+        env:
+          AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+
+          root = ET.fromstring(os.environ["AZURE_WEBAPP_PUBLISH_PROFILE"])
+          chosen = None
+          for profile in root.findall('.//publishProfile'):
+              publish_url = profile.attrib.get('publishUrl', '')
+              if '.scm.' in publish_url:
+                  chosen = profile
+                  break
+
+          if chosen is None:
+              raise SystemExit('No SCM publish profile found in AZURE_WEBAPP_PUBLISH_PROFILE.')
+
+          scm_url = chosen.attrib['publishUrl']
+          if not scm_url.startswith('http'):
+              scm_url = f'https://{scm_url}'
+
+          app_url = chosen.attrib.get('destinationAppUrl', '')
+          if app_url and not app_url.startswith('http'):
+              app_url = f'https://{app_url.lstrip("/")}'
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              print(f"scm_url={scm_url}", file=output)
+              print(f"app_url={app_url}", file=output)
+              print(f"user={chosen.attrib['userName']}", file=output)
+              print(f"password={chosen.attrib['userPWD']}", file=output)
+          PY
+
+      - name: Deploy to Azure via Kudu ZipDeploy
         id: deploy-to-webapp
-        with:
-          app-name: 'unefaimdevie'
-          slot-name: 'Production'
-          package: .
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        run: |
+          set -euo pipefail
+          DEPLOY_URL="${{ steps.publish-profile.outputs.scm_url }}/api/zipdeploy?clean=true"
+          echo "deployed_webapp_url=${{ steps.publish-profile.outputs.app_url }}" >> "$GITHUB_OUTPUT"
+          curl -fsS \
+            -u "${{ steps.publish-profile.outputs.user }}:${{ steps.publish-profile.outputs.password }}" \
+            -H "Content-Type: application/zip" \
+            --data-binary @deploy.zip \
+            "$DEPLOY_URL"
 
       - name: Validate deployment target
         run: |
           set -euo pipefail
-          DEPLOYED_URL="${{ steps.deploy-to-webapp.outputs.webapp-url }}"
+          DEPLOYED_URL="${{ steps.deploy-to-webapp.outputs.deployed_webapp_url }}"
           echo "deployed_webapp_url=$DEPLOYED_URL"
           if [ -n "$DEPLOYED_URL" ] && [[ "$DEPLOYED_URL" != *"unefaimdevie.azurewebsites.net"* ]]; then
             echo "Warning: deployment target mismatch. Check AZURE_WEBAPP_PUBLISH_PROFILE secret."
@@ -109,7 +152,7 @@ jobs:
       - name: Verify live homepage content (best effort)
         run: |
           set -euo pipefail
-          LIVE_URL="${{ steps.deploy-to-webapp.outputs.webapp-url }}"
+          LIVE_URL="${{ steps.deploy-to-webapp.outputs.deployed_webapp_url }}"
           if [ -z "$LIVE_URL" ]; then
             LIVE_URL="https://unefaimdevie.azurewebsites.net/"
           fi
