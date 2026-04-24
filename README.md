@@ -108,7 +108,7 @@ Les comptes animateurs sont créés par l'administration. Il n'existe pas d'insc
 
 ### Azure App Service
 
-- Workflow `.github/workflows/deploy-azure.yml`
+- Workflow manuel et automatique : `.github/workflows/main_unefaimdevie.yml`
 - Script startup : `deploy/azure/startup.sh`
 - Secrets requis :
   - `AZURE_WEBAPP_NAME`
@@ -125,7 +125,7 @@ Les comptes animateurs sont créés par l'administration. Il n'existe pas d'insc
 ## 9) CI/CD
 
 - `ci.yml` : check Django + migrations + tests
-- `deploy-azure.yml` : déploiement Azure
+- `main_unefaimdevie.yml` : déploiement Azure (push sur `main` + lancement manuel)
 - `deploy-ovh.yml` : déploiement OVH manuel
 
 ## 10) Commandes utiles
