@@ -3,12 +3,18 @@
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
 name: Deploy Azure App Service
+run-name: Deploy Azure (${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_ref || github.ref_name }}) @ ${{ github.sha }}
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      deploy_ref:
+        description: "Branch or tag to deploy"
+        required: true
+        default: "main"
 
 concurrency:
   group: azure-deploy
@@ -25,6 +31,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_ref || github.ref_name }}
+
+      - name: Show revision to deploy
+        run: |
+          echo "event=${{ github.event_name }}"
+          echo "selected_ref=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_ref || github.ref_name }}"
+          echo "branch_from_git=$(git rev-parse --abbrev-ref HEAD)"
+          echo "commit=$(git rev-parse HEAD)"
 
       - name: Set up Python version
         uses: actions/setup-python@v5.6.0
