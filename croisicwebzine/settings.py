@@ -23,6 +23,8 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     ".azurewebsites.net",
+    "unefaimdevie.fr",
+    "www.unefaimdevie.fr",
 ]
 
 extra_hosts = _env_str("ALLOWED_HOSTS", "")
