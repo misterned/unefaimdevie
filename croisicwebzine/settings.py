@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
 
     # App principale
     'core',
@@ -65,6 +66,8 @@ INSTALLED_APPS = [
 
 if azure_media_enabled:
     INSTALLED_APPS.append("storages")
+
+APPLICATIONINSIGHTS_CONNECTION_STRING = _env_str("APPLICATIONINSIGHTS_CONNECTION_STRING")
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,6 +81,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
+
+if APPLICATIONINSIGHTS_CONNECTION_STRING:
+    MIDDLEWARE.insert(0, 'opencensus.ext.django.middleware.OpencensusMiddleware')
+    OPENCENSUS = {
+        'TRACE': {
+            'SAMPLER': 'opencensus.trace.samplers.ProbabilitySampler(rate=1)',
+            'EXPORTER': (
+                f'opencensus.ext.azure.trace_exporter.AzureExporter('
+                f'connection_string="{APPLICATIONINSIGHTS_CONNECTION_STRING}")'
+            ),
+        }
+    }
 
 ROOT_URLCONF = 'croisicwebzine.urls'
 

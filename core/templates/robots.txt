@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /espace-animateur/
+Disallow: /moderation/
+Disallow: /admin/
+Allow: /
+
+Sitemap: https://www.unefaimdevie.fr/sitemap.xml

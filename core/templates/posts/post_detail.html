@@ -1,6 +1,25 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ post.title }} - Une faim de vie au Croisic{% endblock %}
+{% block meta_description %}{{ post.body|truncatewords:25 }}{% endblock %}
+{% block og_title %}{{ post.title }} - Une faim de vie au Croisic{% endblock %}
+{% block og_description %}{{ post.body|truncatewords:25 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}{% if post.image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}">{% endif %}{% endblock %}
+{% block head_extra %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ post.title|escapejs }}",
+  "author": {"@type": "Person", "name": "{{ post.author|escapejs }}"},
+  "datePublished": "{{ post.created_at|date:'c' }}",
+  "dateModified": "{{ post.updated_at|date:'c' }}",
+  "description": "{{ post.body|truncatewords:25|escapejs }}"{% if post.image %},
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}"{% endif %}
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <article class="mb-4">
