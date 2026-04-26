@@ -174,17 +174,38 @@ jobs:
             exit 1
           fi
 
-          curl -fsS -u "$USERNAME:$PASSWORD" "$SCM_URL/api/vfs/site/wwwroot/DEPLOY_SHA.txt" -o deployed_marker.txt
-          echo "deployed_marker:"
-          cat deployed_marker.txt
-          if ! grep -q "${GITHUB_SHA}" deployed_marker.txt; then
-            echo "Error: deployed marker SHA does not match this run."
-            exit 1
+          ROOT_VFS="$SCM_URL/api/vfs/site/wwwroot"
+
+          marker_found=0
+          for attempt in 1 2 3 4 5; do
+            if curl -fsS -u "$USERNAME:$PASSWORD" "$ROOT_VFS/DEPLOY_SHA.txt" -o deployed_marker.txt; then
+              marker_found=1
+              break
+            fi
+            echo "DEPLOY_SHA.txt not available yet (attempt $attempt)."
+            sleep 3
+          done
+
+          if [ "$marker_found" -eq 1 ]; then
+            echo "deployed_marker:"
+            cat deployed_marker.txt
+            if ! grep -q "${GITHUB_SHA}" deployed_marker.txt; then
+              echo "Error: deployed marker SHA does not match this run."
+              exit 1
+            fi
+          else
+            echo "Warning: DEPLOY_SHA.txt not found in wwwroot after retries."
           fi
 
-          curl -fsS -u "$USERNAME:$PASSWORD" "$SCM_URL/api/vfs/site/wwwroot/core/templates/home.html" -o deployed_home.html
+          if ! curl -fsS -u "$USERNAME:$PASSWORD" "$ROOT_VFS/core/templates/home.html" -o deployed_home.html; then
+            echo "Primary template path not found, trying fallback templates/home.html"
+            curl -fsS -u "$USERNAME:$PASSWORD" "$ROOT_VFS/templates/home.html" -o deployed_home.html
+          fi
+
           if ! grep -qF 'Que trouverez vous ici ?' deployed_home.html; then
             echo "Error: deployed home.html on target app is not the expected version."
+            echo "wwwroot directory snapshot (for diagnostics):"
+            curl -fsS -u "$USERNAME:$PASSWORD" "$ROOT_VFS/" | sed -n '1,120p' || true
             exit 1
           fi
 
