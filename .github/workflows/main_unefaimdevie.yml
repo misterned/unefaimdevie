@@ -93,6 +93,7 @@ jobs:
           AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         run: |
           python3 - <<'PY'
+          import base64
           import os
           import xml.etree.ElementTree as ET
 
@@ -117,10 +118,12 @@ jobs:
               app_url = 'https://' + app_url.lstrip('/')
 
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              username = chosen.attrib.get('userName', '')
+              password = chosen.attrib.get('userPWD', '')
               print(f"scm_url={scm_url}", file=output)
               print(f"app_url={app_url}", file=output)
-              print(f"user={chosen.attrib.get('userName', '')}", file=output)
-              print(f"password={chosen.attrib.get('userPWD', '')}", file=output)
+              print(f"user_b64={base64.b64encode(username.encode('utf-8')).decode('ascii')}", file=output)
+              print(f"password_b64={base64.b64encode(password.encode('utf-8')).decode('ascii')}", file=output)
           PY
 
       - name: Create deploy marker
@@ -156,11 +159,20 @@ jobs:
           fi
 
       - name: Verify deployed files via Kudu API
+        env:
+          SCM_URL: ${{ steps.publish-profile.outputs.scm_url }}
+          SCM_USERNAME_B64: ${{ steps.publish-profile.outputs.user_b64 }}
+          SCM_PASSWORD_B64: ${{ steps.publish-profile.outputs.password_b64 }}
         run: |
           set -euo pipefail
-          SCM_URL="${{ steps.publish-profile.outputs.scm_url }}"
-          USERNAME="${{ steps.publish-profile.outputs.user }}"
-          PASSWORD="${{ steps.publish-profile.outputs.password }}"
+
+          USERNAME="$(printf '%s' "$SCM_USERNAME_B64" | base64 -d)"
+          PASSWORD="$(printf '%s' "$SCM_PASSWORD_B64" | base64 -d)"
+
+          if [ -z "$SCM_URL" ] || [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
+            echo "Error: missing SCM credentials parsed from publish profile."
+            exit 1
+          fi
 
           curl -fsS -u "$USERNAME:$PASSWORD" "$SCM_URL/api/vfs/site/wwwroot/DEPLOY_SHA.txt" -o deployed_marker.txt
           echo "deployed_marker:"
