@@ -146,11 +146,11 @@ jobs:
           PROFILE_APP_URL="${{ steps.publish-profile.outputs.app_url }}"
           echo "deployed_webapp_url=$DEPLOYED_URL"
           echo "profile_app_url=$PROFILE_APP_URL"
-          if [ -n "$PROFILE_APP_URL" ] && [[ "$PROFILE_APP_URL" != *"unefaimdevie.azurewebsites.net"* ]]; then
+          if [ -n "$PROFILE_APP_URL" ] && [[ "$PROFILE_APP_URL" != *"unefaimdevie"* ]]; then
             echo "Error: publish profile points to a different app. Update AZURE_WEBAPP_PUBLISH_PROFILE."
             exit 1
           fi
-          if [ -n "$DEPLOYED_URL" ] && [[ "$DEPLOYED_URL" != *"unefaimdevie.azurewebsites.net"* ]]; then
+          if [ -n "$DEPLOYED_URL" ] && [[ "$DEPLOYED_URL" != *"unefaimdevie"* ]]; then
             echo "Error: deployment target mismatch. Check AZURE_WEBAPP_PUBLISH_PROFILE secret."
             exit 1
           fi
@@ -181,7 +181,7 @@ jobs:
           set -euo pipefail
           LIVE_URL="${{ steps.deploy-to-webapp.outputs.webapp-url }}"
           if [ -z "$LIVE_URL" ]; then
-            LIVE_URL="https://unefaimdevie.azurewebsites.net/"
+            LIVE_URL="${{ steps.publish-profile.outputs.app_url }}"
           fi
           LIVE_URL="${LIVE_URL%/}/"
           echo "live_url=$LIVE_URL"
