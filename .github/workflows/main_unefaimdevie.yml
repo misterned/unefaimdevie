@@ -114,7 +114,7 @@ jobs:
 
           app_url = chosen.attrib.get('destinationAppUrl', '').strip()
           if app_url and not app_url.startswith('http'):
-              app_url = f'https://{app_url.lstrip('/')}'
+              app_url = 'https://' + app_url.lstrip('/')
 
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
               print(f"scm_url={scm_url}", file=output)
