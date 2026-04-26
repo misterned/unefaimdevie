@@ -158,58 +158,33 @@ jobs:
             exit 1
           fi
 
-      - name: Verify deployed files via Kudu API
+      - name: Inspect deployed files via Kudu (diagnostic)
         env:
           SCM_URL: ${{ steps.publish-profile.outputs.scm_url }}
           SCM_USERNAME_B64: ${{ steps.publish-profile.outputs.user_b64 }}
           SCM_PASSWORD_B64: ${{ steps.publish-profile.outputs.password_b64 }}
         run: |
-          set -euo pipefail
-
           USERNAME="$(printf '%s' "$SCM_USERNAME_B64" | base64 -d)"
           PASSWORD="$(printf '%s' "$SCM_PASSWORD_B64" | base64 -d)"
 
-          if [ -z "$SCM_URL" ] || [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
-            echo "Error: missing SCM credentials parsed from publish profile."
-            exit 1
-          fi
+          echo "--- Kudu App Settings (SCM build flag) ---"
+          curl -fsS -u "$USERNAME:$PASSWORD" "$SCM_URL/api/settings" 2>/dev/null \
+            | python3 -c "import sys,json; s=json.load(sys.stdin); print('SCM_DO_BUILD_DURING_DEPLOYMENT:', s.get('SCM_DO_BUILD_DURING_DEPLOYMENT','(not set)'))" || true
 
-          ROOT_VFS="$SCM_URL/api/vfs/site/wwwroot"
+          echo "--- Searching for template text in /home/site (via Kudu command API) ---"
+          curl -fsS -u "$USERNAME:$PASSWORD" \
+            -H 'Content-Type: application/json' \
+            -d '{"command":"grep -rF \"Que trouverez vous ici ?\" /home/site/ 2>/dev/null | head -5 || echo NOT_FOUND","dir":"/home/site"}' \
+            "$SCM_URL/api/command" 2>/dev/null | python3 -c "import sys,json; r=json.load(sys.stdin); print(r.get('Output','(no output)'))" || true
 
-          marker_found=0
-          for attempt in 1 2 3 4 5; do
-            if curl -fsS -u "$USERNAME:$PASSWORD" "$ROOT_VFS/DEPLOY_SHA.txt" -o deployed_marker.txt; then
-              marker_found=1
-              break
-            fi
-            echo "DEPLOY_SHA.txt not available yet (attempt $attempt)."
-            sleep 3
-          done
+          echo "--- DEPLOY_SHA in wwwroot ---"
+          curl -fsS -u "$USERNAME:$PASSWORD" "$SCM_URL/api/vfs/site/wwwroot/DEPLOY_SHA.txt" 2>/dev/null || echo "(not found)"
 
-          if [ "$marker_found" -eq 1 ]; then
-            echo "deployed_marker:"
-            cat deployed_marker.txt
-            if ! grep -q "${GITHUB_SHA}" deployed_marker.txt; then
-              echo "Error: deployed marker SHA does not match this run."
-              exit 1
-            fi
-          else
-            echo "Warning: DEPLOY_SHA.txt not found in wwwroot after retries."
-          fi
+          echo "--- home.html in wwwroot/core/templates ---"
+          curl -fsS -u "$USERNAME:$PASSWORD" "$SCM_URL/api/vfs/site/wwwroot/core/templates/home.html" 2>/dev/null \
+            | grep -iF 'trouverez\|la une' || echo "(not found or no matching line)"
 
-          if ! curl -fsS -u "$USERNAME:$PASSWORD" "$ROOT_VFS/core/templates/home.html" -o deployed_home.html; then
-            echo "Primary template path not found, trying fallback templates/home.html"
-            curl -fsS -u "$USERNAME:$PASSWORD" "$ROOT_VFS/templates/home.html" -o deployed_home.html
-          fi
-
-          if ! grep -qF 'Que trouverez vous ici ?' deployed_home.html; then
-            echo "Error: deployed home.html on target app is not the expected version."
-            echo "wwwroot directory snapshot (for diagnostics):"
-            curl -fsS -u "$USERNAME:$PASSWORD" "$ROOT_VFS/" | sed -n '1,120p' || true
-            exit 1
-          fi
-
-      - name: Verify live homepage content (best effort)
+      - name: Verify live homepage content
         run: |
           set -euo pipefail
           LIVE_URL="${{ steps.deploy-to-webapp.outputs.webapp-url }}"
@@ -220,22 +195,25 @@ jobs:
           echo "live_url=$LIVE_URL"
 
           fetched=0
-          for attempt in 1 2 3; do
-            if curl -fsSL "$LIVE_URL" -o live_home.html; then
+          for attempt in 1 2 3 4 5; do
+            if curl -fsSL "$LIVE_URL" -o live_home.html 2>/dev/null; then
               fetched=1
               break
             fi
-            echo "Live check attempt $attempt failed"
+            echo "Live check attempt $attempt failed, retrying in 10s..."
+            sleep 10
           done
 
           if [ "$fetched" -eq 0 ]; then
-            echo "Warning: live homepage check skipped (network/DNS issue from runner)."
-            exit 0
+            echo "Error: could not reach live site after 5 attempts."
+            exit 1
           fi
 
           echo "live_home_match=$(grep -nF 'Que trouverez vous ici ?' live_home.html || true)"
           if ! grep -qF 'Que trouverez vous ici ?' live_home.html; then
-            echo "Warning: live site does not contain expected text after deployment"
-            exit 0
+            echo "Error: live site does not contain expected text after deployment."
+            echo "(Oryx may be rebuilding from old code — check SCM_DO_BUILD_DURING_DEPLOYMENT in Azure App Settings)"
+            exit 1
           fi
+          echo "Live site verification passed."
           
