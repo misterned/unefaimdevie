@@ -1,0 +1,233 @@
+/* =============================================
+   CHARTE GRAPHIQUE — UNE FAIM DE VIE AU CROISIC
+   ============================================= */
+
+/* --- Variables --- */
+:root {
+  --bleu-maritime: #3A5F78;
+  --bleu-clair:    #A9C2D2;
+  --sable-dore:    #E2C479;
+  --gris-clair:    #F4F4F4;
+  --noir-profond:  #111111;
+}
+
+/* --- Base --- */
+body {
+  background-color: var(--gris-clair);
+  color: var(--noir-profond);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+
+/* --- Typographies --- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--bleu-maritime);
+}
+
+h1 { font-weight: 900; }
+h2 { font-weight: 700; }
+h3, h4, h5, h6 { font-weight: 600; }
+
+p, li, td, th, label, input, textarea, select {
+  font-family: 'Inter', sans-serif;
+}
+
+/* --- Navbar --- */
+nav.navbar,
+.navbar {
+  background-color: #3A5F78 !important;
+  border-bottom: 3px solid var(--sable-dore) !important;
+}
+
+.navbar .nav-link {
+  color: rgba(255,255,255,0.9) !important;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+
+.navbar .nav-link:hover {
+  color: var(--sable-dore) !important;
+}
+
+.navbar .navbar-text {
+  color: rgba(255,255,255,0.8) !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+}
+
+/* --- Boutons --- */
+.btn-primary,
+.btn-brand {
+  background-color: var(--sable-dore);
+  border-color: var(--sable-dore);
+  color: var(--noir-profond);
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-primary:hover,
+.btn-brand:hover {
+  background-color: #c9ad55;
+  border-color: #c9ad55;
+  color: var(--noir-profond);
+}
+
+.btn-secondary,
+.btn-outline-secondary {
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+.btn-outline-primary {
+  border-color: var(--bleu-maritime);
+  color: var(--bleu-maritime);
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--bleu-maritime);
+  border-color: var(--bleu-maritime);
+  color: #fff;
+}
+
+.btn-outline-light {
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* --- Cards --- */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(58, 95, 120, 0.10);
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 6px 24px rgba(58, 95, 120, 0.18);
+}
+
+.card-img-top {
+  border-radius: 12px 12px 0 0;
+}
+
+/* --- Lignes décoratives dorées --- */
+.section-title,
+.page-title {
+  border-bottom: 3px solid var(--sable-dore);
+  padding-bottom: 0.4rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+hr {
+  border: 0;
+  border-top: 3px solid var(--sable-dore);
+  opacity: 1;
+}
+
+/* --- Hero / Jumbotron --- */
+.hero {
+  background-color: var(--bleu-maritime);
+  color: #fff;
+  border-radius: 14px;
+  padding: 3rem 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.hero h1 {
+  color: #fff;
+  font-weight: 900;
+}
+
+.hero p {
+  color: var(--bleu-clair);
+  font-size: 1.1rem;
+}
+
+/* --- Sections espacées --- */
+main.container {
+  padding-top: 2.5rem !important;
+  padding-bottom: 3rem !important;
+}
+
+section {
+  margin-bottom: 2.5rem;
+}
+
+/* --- Textes muted --- */
+.text-muted {
+  color: #6b7a85 !important;
+  font-size: 0.85rem;
+}
+
+/* --- Formulaires --- */
+.form-control:focus {
+  border-color: var(--bleu-maritime);
+  box-shadow: 0 0 0 0.2rem rgba(58, 95, 120, 0.2);
+}
+
+/* --- Alertes --- */
+.alert {
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* --- Footer futur --- */
+footer {
+  background-color: var(--bleu-maritime);
+  color: rgba(255,255,255,0.8);
+  padding: 1.5rem 0;
+  margin-top: 3rem;
+  border-top: 3px solid var(--sable-dore);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+}
+
+/* --- Puces basées sur la favicon --- */
+.list-favicon {
+  list-style: none;
+  padding-left: 0;
+}
+
+.list-favicon li {
+  position: relative;
+  padding-left: 1.6rem;
+  margin-bottom: 0.45rem;
+}
+
+.list-favicon li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 12px;
+  height: 12px;
+  background: url('/static/core/images/puce-favicon-12.png') no-repeat center center;
+  background-size: contain;
+}
+
+.list-favicon-md li::before {
+  width: 16px;
+  height: 16px;
+  top: 0.25em;
+  background-image: url('/static/core/images/puce-favicon-16.png');
+}
+
+.list-favicon-lg li::before {
+  width: 20px;
+  height: 20px;
+  top: 0.15em;
+  background-image: url('/static/core/images/puce-favicon-20.png');
+}

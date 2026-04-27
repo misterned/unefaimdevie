@@ -1,3 +1,6 @@
+"""
+Script de gestion principal pour les commandes Django (manage.py).
+"""
 #!/usr/bin/env python
 import os
 import sys

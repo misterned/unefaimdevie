@@ -1,3 +1,6 @@
+"""
+Définition des routes principales du projet Django (urls.py).
+"""
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -6,6 +9,9 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
+"""
+Point d'entrée WSGI pour le déploiement du projet Django.
+"""
 
 from core.sitemaps import PostSitemap
 from core.views import HomeView

@@ -1,3 +1,6 @@
+"""
+Vues principales du site (listes, détails, création, édition, permissions).
+"""
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
@@ -17,19 +20,23 @@ from .services import (
 
 
 class AnimateurRequiredMixin(UserPassesTestMixin):
+    """Mixin de permission : accès réservé aux animateurs/admins."""
     def test_func(self):
         return user_is_animateur(self.request.user)
 
 
 class HomeView(ListView):
+    """Vue d'accueil : liste les posts publiés et affiche la pub en vedette."""
     model = Post
     template_name = "home.html"
     context_object_name = "posts"
 
     def get_queryset(self):
+        """Retourne les posts publiés uniquement."""
         return Post.objects.filter(status=Post.Status.PUBLISHED)
 
     def get_context_data(self, **kwargs):
+        """Ajoute la pub en vedette au contexte."""
         context = super().get_context_data(**kwargs)
         context["featured_ad"] = Advertisement.objects.filter(
             status=Advertisement.Status.APPROVED, featured=True
@@ -38,20 +45,24 @@ class HomeView(ListView):
 
 
 class PostListView(ListView):
+    """Vue liste des posts publiés."""
     model = Post
     template_name = "posts/post_list.html"
     context_object_name = "posts"
 
     def get_queryset(self):
+        """Retourne les posts publiés uniquement."""
         return Post.objects.filter(status=Post.Status.PUBLISHED)
 
 
 class PostDetailView(DetailView):
+    """Vue détail d'un post, affiche les commentaires validés."""
     model = Post
     template_name = "posts/post_detail.html"
     context_object_name = "post"
 
     def get_context_data(self, **kwargs):
+        """Ajoute les commentaires validés et droits d'édition au contexte."""
         context = super().get_context_data(**kwargs)
         context["comments"] = self.object.comments.filter(status=Comment.Status.APPROVED)
         context["can_edit_post"] = can_manage_post(self.request.user, self.object)
@@ -59,44 +70,53 @@ class PostDetailView(DetailView):
 
 
 class PostCreateView(AnimateurRequiredMixin, CreateView):
+    """Vue création d'un post (réservée animateur/admin)."""
     form_class = PostForm
     model = Post
     template_name = "posts/post_form.html"
 
     def form_valid(self, form):
+        """Assigne l'auteur et affiche un message de succès."""
         form.instance.author = self.request.user
         messages.success(self.request, "Article créé avec succès.")
         return super().form_valid(form)
 
 
 class PostUpdateView(AnimateurRequiredMixin, UpdateView):
+    """Vue édition d'un post (réservée animateur/admin)."""
     form_class = PostForm
     model = Post
     template_name = "posts/post_form.html"
 
     def test_func(self):
+        """Vérifie que l'utilisateur peut éditer ce post."""
         return can_manage_post(self.request.user, self.get_object())
 
     def form_valid(self, form):
+        """Affiche un message de succès à la modification."""
         messages.success(self.request, "Article modifié avec succès.")
         return super().form_valid(form)
 
 
 class CommentCreateView(CreateView):
+    """Vue création d'un commentaire sur un post."""
     model = Comment
     form_class = CommentForm
     template_name = "posts/comment_form.html"
 
     def dispatch(self, request, *args, **kwargs):
+        """Charge l'article cible avant de traiter la requête."""
         self.article = get_object_or_404(Post, pk=self.kwargs["pk"], status=Post.Status.PUBLISHED)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        """Ajoute le post au contexte du formulaire de commentaire."""
         context = super().get_context_data(**kwargs)
         context["post"] = self.article
         return context
 
     def get_initial(self):
+        """Initialise les valeurs du formulaire de commentaire."""
         initial = super().get_initial()
         if self.request.user.is_authenticated:
             initial.setdefault("author_name", get_user_identifier(self.request.user))

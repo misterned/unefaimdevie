@@ -1,3 +1,6 @@
+"""
+Modèles de données principaux : Post, Comment, Advertisement.
+"""
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -11,6 +14,7 @@ from .services import get_user_identifier
 
 
 class Post(models.Model):
+    """Modèle représentant un article/post du site."""
     class Status(models.TextChoices):
         DRAFT = "draft", "Brouillon"
         PUBLISHED = "published", "Publié"
@@ -49,6 +53,13 @@ class Post(models.Model):
 
     @staticmethod
     def _normalize_media_name(name: str) -> str:
+        """Nettoie et normalise le nom d'un fichier média (image, vidéo, etc.).
+
+        Args:
+            name (str): Nom du fichier.
+        Returns:
+            str: Nom normalisé.
+        """
         if not name:
             return name
 
@@ -66,9 +77,11 @@ class Post(models.Model):
         return normalized
 
     def __str__(self):
+        """Retourne le titre du post (affichage admin)."""
         return self.title
 
     def save(self, *args, **kwargs):
+        """Sauvegarde le post, génère le slug et normalise le nom de l'image."""
         if not self.slug:
             self.slug = slugify(self.title)
 
@@ -78,6 +91,7 @@ class Post(models.Model):
         super().save(*args, **kwargs)
 
     def clean(self):
+        """Validation personnalisée du post (type vidéo, etc.)."""
         super().clean()
         if self.video_file and hasattr(self.video_file, "file"):
             content_type = getattr(self.video_file.file, "content_type", "")
@@ -85,10 +99,12 @@ class Post(models.Model):
                 raise ValidationError({"video_file": "Le fichier doit être un média vidéo valide."})
 
     def get_absolute_url(self):
+        """Retourne l'URL absolue du post (pour reverse)."""
         return reverse("post-detail", kwargs={"pk": self.pk})
 
 
 class Comment(models.Model):
+    """Modèle représentant un commentaire sur un post."""
     class Status(models.TextChoices):
         PENDING = "pending", "En attente"
         APPROVED = "approved", "Validé"
