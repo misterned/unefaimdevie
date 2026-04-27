@@ -1,4 +1,4 @@
-def ensure_animateur_group() -> Group:
+
 """
 Services liés aux permissions et groupes utilisateurs pour l'application.
 """
