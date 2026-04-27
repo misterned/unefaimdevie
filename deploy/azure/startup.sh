@@ -29,6 +29,7 @@ fi
 "$PYTHON_BIN" -m pip --version
 "$PYTHON_BIN" -m pip show django gunicorn whitenoise dj-database-url || true
 "$PYTHON_BIN" -m pip show django-storages azure-storage-blob || true
+"$PYTHON_BIN" -m pip show opencensus-ext-django opencensus-ext-azure || true
 "$PYTHON_BIN" - <<'PY'
 import os
 print("[startup] AZURE_STORAGE_ACCOUNT_NAME set:", bool(os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")))

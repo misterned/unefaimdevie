@@ -83,16 +83,21 @@ MIDDLEWARE = [
 ]
 
 if APPLICATIONINSIGHTS_CONNECTION_STRING:
-    MIDDLEWARE.insert(0, 'opencensus.ext.django.middleware.OpencensusMiddleware')
-    OPENCENSUS = {
-        'TRACE': {
-            'SAMPLER': 'opencensus.trace.samplers.ProbabilitySampler(rate=1)',
-            'EXPORTER': (
-                f'opencensus.ext.azure.trace_exporter.AzureExporter('
-                f'connection_string="{APPLICATIONINSIGHTS_CONNECTION_STRING}")'
-            ),
+    try:
+        import opencensus.ext.django  # noqa: F401  – vérification que le paquet est installé
+        MIDDLEWARE.insert(0, 'opencensus.ext.django.middleware.OpencensusMiddleware')
+        OPENCENSUS = {
+            'TRACE': {
+                'SAMPLER': 'opencensus.trace.samplers.ProbabilitySampler(rate=1)',
+                'EXPORTER': (
+                    f'opencensus.ext.azure.trace_exporter.AzureExporter('
+                    f'connection_string="{APPLICATIONINSIGHTS_CONNECTION_STRING}")'
+                ),
+            }
         }
-    }
+    except ImportError:
+        import logging as _log
+        _log.warning('[settings] opencensus non disponible – Application Insights désactivé pour ce démarrage.')
 
 ROOT_URLCONF = 'croisicwebzine.urls'
 
