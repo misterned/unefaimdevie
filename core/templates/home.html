@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static %}oui à tous
 
 {% block title %}Accueil - Une faim de vie au Croisic{% endblock %}
 {% block meta_description %}Webzine local du Croisic : articles culturels, événements locaux, regards bienveillants et parfois humoristiques sur la vie au Croisic et alentours.{% endblock %}
@@ -18,7 +18,7 @@
 <section class="mb-4">
     <h2 class="h5 section-title">Que trouverez vous ici ?</h2>
     <ul class="list-favicon list-favicon-md">
-        <li>Des articles au sujet des événements et rendez-vous du Croisic ou d'initiatives locales et acteurs du territoire</li>
+        <li>Des articles au sujet des événements culturels, des initiatives et des plaisirs partagés au Croisic</li>
         <li>Nos regards sont bienveillants, culturels, parfois sérieux souvent humoristiques, jamais figés</li>
         <li>Vos commentaires sont les bienvenus mais modérés</li>
         <li>La diffusion de publicité ici se fait à l'ancienne après rencontre en "présentiel" avec Stef sur les quais ou ailleurs...</li>
@@ -27,7 +27,7 @@
 
 {% if featured_ad %}
 <section class="mb-4">
-    <h2 class="h5 section-title">À noter</h2>
+    <h2 class="h5 section-title">Votre webzine vous recommande</h2>
     <div class="card">
         {% if featured_ad.image %}
             <img src="{{ featured_ad.image.url }}" class="card-img-top" alt="{{ featured_ad.title }}" style="max-height: 220px; object-fit: cover;">
