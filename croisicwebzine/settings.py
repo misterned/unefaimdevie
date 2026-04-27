@@ -76,6 +76,9 @@ MIDDLEWARE = [
     # Whitenoise pour servir les statiques en production
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
+    # Mesure du temps de réponse des médias
+    'core.middleware.MediaTimingMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
