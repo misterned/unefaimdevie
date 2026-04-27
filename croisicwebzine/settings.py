@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+
 from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -97,7 +98,10 @@ if APPLICATIONINSIGHTS_CONNECTION_STRING:
         }
     except ImportError:
         import logging as _log
-        _log.warning('[settings] opencensus non disponible – Application Insights désactivé pour ce démarrage.')
+        _log.warning(
+            '[settings] opencensus non disponible – '
+            'Application Insights désactivé pour ce démarrage.'
+        )
 
 ROOT_URLCONF = 'croisicwebzine.urls'
 

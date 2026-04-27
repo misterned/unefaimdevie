@@ -1,10 +1,11 @@
+from urllib.parse import urlparse
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
-from urllib.parse import urlparse
 
 from .services import get_user_identifier
 

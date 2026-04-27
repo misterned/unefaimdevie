@@ -1,6 +1,5 @@
 from django.contrib.auth.models import Group
 
-
 ANIMATEUR_GROUP_NAME = "animateur"
 
 

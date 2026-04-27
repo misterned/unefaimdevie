@@ -108,11 +108,17 @@ class CommentCreateView(CreateView):
         form.instance.status = Comment.Status.PENDING
         if self.request.user.is_authenticated:
             form.instance.author = self.request.user
-            form.instance.author_name = form.cleaned_data["author_name"] or get_user_identifier(self.request.user)
-            form.instance.author_email = form.cleaned_data["author_email"] or self.request.user.email
+            form.instance.author_name = (
+                form.cleaned_data["author_name"]
+                or get_user_identifier(self.request.user)
+            )
+            form.instance.author_email = (
+                form.cleaned_data["author_email"]
+                or self.request.user.email
+            )
         messages.info(
             self.request,
-            "Commentaire soumis. Il sera publié après validation par un modérateur.",
+            "Commentaire soumis. Il sera publié après validation par un modérateur."
         )
         return super().form_valid(form)
 
@@ -138,9 +144,14 @@ class CommentModerationListView(AnimateurRequiredMixin, ListView):
 
 class CommentModerationActionView(AnimateurRequiredMixin, View):
     def post(self, request, *args, **kwargs):
-        comment = get_object_or_404(Comment.objects.select_related("post", "post__author"), pk=kwargs["pk"])
+        comment = get_object_or_404(
+            Comment.objects.select_related("post", "post__author"),
+            pk=kwargs["pk"]
+        )
         if not can_moderate_comment(request.user, comment):
-            raise PermissionDenied("Vous ne pouvez modérer que les commentaires de vos propres articles.")
+            raise PermissionDenied(
+                "Vous ne pouvez modérer que les commentaires de vos propres articles."
+            )
         action = kwargs["action"]
         if action == "approve":
             comment.status = Comment.Status.APPROVED
