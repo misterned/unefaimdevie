@@ -23,7 +23,7 @@
 <body>
 
   <!-- ══ HEADER ══ -->
-  <header class="lo-header">
+  <header class="lo-header" id="lo-header">
     <div class="lo-header__main">
 
       <a href="{% url 'home' %}">
@@ -32,7 +32,13 @@
              class="lo-header__logo" />
       </a>
 
-      <nav aria-label="Navigation principale">
+      <button class="lo-burger" id="lo-burger" aria-label="Menu" aria-expanded="false" aria-controls="lo-nav">
+        <span class="lo-burger__bar"></span>
+        <span class="lo-burger__bar"></span>
+        <span class="lo-burger__bar"></span>
+      </button>
+
+      <nav aria-label="Navigation principale" id="lo-nav">
         <ul class="lo-header__nav">
           <li><a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Accueil</a></li>
           {% for cat in nav_categories %}
@@ -75,6 +81,23 @@
     <p class="lo-footer__copy">© {% now "Y" %} Une faim de vie au Croisic</p>
   </footer>
   <!-- ══ /FOOTER ══ -->
+
+  <script>
+    (function () {
+      var burger = document.getElementById('lo-burger');
+      var header = document.getElementById('lo-header');
+      burger.addEventListener('click', function () {
+        var open = header.classList.toggle('lo-header--open');
+        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      document.querySelectorAll('#lo-nav a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          header.classList.remove('lo-header--open');
+          burger.setAttribute('aria-expanded', 'false');
+        });
+      });
+    })();
+  </script>
 
   {% block extra_js %}{% endblock %}
 </body>

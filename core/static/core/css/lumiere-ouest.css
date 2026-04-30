@@ -627,6 +627,42 @@ body {
 }
 
 /* ════════════════════════════════
+   BURGER (caché sur desktop)
+════════════════════════════════ */
+.lo-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.lo-burger__bar {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: oklch(75% 0.02 70);
+  transition: transform .25s ease, opacity .2s ease;
+}
+
+/* Animation → croix quand ouvert */
+.lo-header--open .lo-burger__bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.lo-header--open .lo-burger__bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.lo-header--open .lo-burger__bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ════════════════════════════════
    RESPONSIVE — TABLETTE (≤ 900px)
 ════════════════════════════════ */
 @media (max-width: 900px) {
@@ -638,7 +674,7 @@ body {
   /* Grille : 3 col → 2 col */
   .lo-grid { grid-template-columns: repeat(2, 1fr); }
 
-  /* Card featured : annule le span-2 et le layout côte-à-côte */
+  /* Card featured : annule le layout côte-à-côte */
   .lo-card--featured {
     grid-column: span 2;
     display: flex;
@@ -662,54 +698,72 @@ body {
 ════════════════════════════════ */
 @media (max-width: 640px) {
 
-  /* Header : logo sur une ligne, nav scrollable en dessous */
+  /* ── Header ── */
   .lo-header { padding: 0 20px; }
 
   .lo-header__main {
     flex-wrap: wrap;
-    padding: 14px 0 0;
+    padding: 12px 0 12px;
     gap: 0;
+    align-items: center;
   }
 
-  .lo-header__logo {
-    height: 44px;
-    margin-bottom: 10px;
-  }
+  .lo-header__logo { height: 44px; }
 
-  .lo-header__nav {
+  /* Burger visible */
+  .lo-burger { display: flex; }
+
+  /* Nav cachée par défaut, révélée à l'ouverture */
+  #lo-nav {
+    display: none;
     width: 100%;
     order: 3;
-    overflow-x: auto;
-    padding: 8px 0 14px;
-    gap: 16px;
-    /* Masquer la scrollbar visuellement */
-    scrollbar-width: none;
+    border-top: 1px solid oklch(28% 0.02 50);
+    margin-top: 12px;
   }
-  .lo-header__nav::-webkit-scrollbar { display: none; }
 
-  /* Grille : 2 col → 1 col */
+  .lo-header--open #lo-nav { display: block; }
+
+  .lo-header__nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 6px 0 10px;
+  }
+
+  /* Chaque item prend toute la largeur */
+  .lo-header__nav li { width: 100%; }
+
+  .lo-header__nav a {
+    display: block;
+    padding: 11px 4px;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Séparateurs remplacés par un simple trait entre items */
+  .lo-header__nav-sep { display: none; }
+
+  .lo-header__nav li + li:not(:has(.lo-header__nav-sep)) a {
+    border-top: 1px solid oklch(28% 0.02 50);
+  }
+
+  /* ── Grille : 2 col → 1 col ── */
   .lo-grid { grid-template-columns: 1fr; }
 
-  /* Card featured pleine largeur */
-  .lo-card--featured {
-    grid-column: span 1;
-  }
+  .lo-card--featured { grid-column: span 1; }
   .lo-card--featured .lo-card__img { aspect-ratio: 3 / 2; }
 
-  /* Mosaïque : 2 col → 1 col */
+  /* ── Mosaïque : 2 col → 1 col ── */
   .lo-mosaic { grid-template-columns: 1fr; }
   .lo-mosaic__cell { height: 200px; }
 
-  /* Hero : hauteur réduite */
+  /* ── Hero ── */
   .lo-hero { height: clamp(320px, 60vh, 480px); }
 
-  /* Byline article : wrap sur petits écrans */
-  .lo-article__byline {
-    flex-wrap: wrap;
-    gap: 6px 12px;
-  }
+  /* ── Article ── */
+  .lo-article__byline { flex-wrap: wrap; gap: 6px 12px; }
 
-  /* Lettrine désactivée sur mobile (trop envahissante) */
   .lo-article__body > p:first-child::first-letter {
     font-size: 1em;
     line-height: inherit;
@@ -718,12 +772,11 @@ body {
     color: inherit;
   }
 
-  /* Footer : empilé */
+  /* ── Footer ── */
   .lo-footer {
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
   }
-
   .lo-footer__links { flex-wrap: wrap; gap: 16px; }
 }
