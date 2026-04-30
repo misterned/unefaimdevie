@@ -85,7 +85,7 @@ body {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: oklch(50% 0.03 60);
+  color: oklch(75% 0.02 70);
   text-align: right;
   line-height: 1.5;
   flex-shrink: 0;
@@ -621,7 +621,7 @@ body {
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: oklch(55% 0.03 60);
+  color: oklch(72% 0.03 65);
   text-decoration: none;
   transition: color .2s;
 }
@@ -629,7 +629,7 @@ body {
 
 .lo-footer__copy {
   font-size: 11px;
-  color: oklch(40% 0.02 55);
+  color: oklch(68% 0.02 60);
 }
 
 /* ════════════════════════════════
