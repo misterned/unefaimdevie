@@ -35,20 +35,14 @@
       <nav aria-label="Navigation principale">
         <ul class="lo-header__nav">
           <li><a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Accueil</a></li>
+          {% for cat in nav_categories %}
           <li><span class="lo-header__nav-sep"></span></li>
-          <li><a href="{% url 'post-list' %}?categorie=peche" {% if request.GET.categorie == 'peche' %}class="active"{% endif %}>Pêche</a></li>
+          <li><a href="{% url 'post-list' %}?categorie={{ cat }}" {% if request.GET.categorie == cat %}class="active"{% endif %}>{{ cat }}</a></li>
+          {% endfor %}
           <li><span class="lo-header__nav-sep"></span></li>
-          <li><a href="{% url 'post-list' %}?categorie=meteo" {% if request.GET.categorie == 'meteo' %}class="active"{% endif %}>Météo</a></li>
-          <li><span class="lo-header__nav-sep"></span></li>
-          <li><a href="{% url 'post-list' %}?categorie=culture" {% if request.GET.categorie == 'culture' %}class="active"{% endif %}>Culture</a></li>
-          <li><span class="lo-header__nav-sep"></span></li>
-          <li><a href="{% url 'post-list' %}">Tous les articles</a></li>
+          <li><a href="{% url 'post-list' %}" {% if request.resolver_match.url_name == 'post-list' and not request.GET.categorie %}class="active"{% endif %}>Tous les articles</a></li>
           <li><span class="lo-header__nav-sep"></span></li>
           <li><a href="{% url 'ad-list' %}" {% if request.resolver_match.url_name == 'ad-list' %}class="active"{% endif %}>Publicités</a></li>
-          {% if user.is_authenticated %}
-          <li><span class="lo-header__nav-sep"></span></li>
-          <li><a href="{% url 'admin:index' %}">Admin</a></li>
-          {% endif %}
         </ul>
       </nav>
 
@@ -75,9 +69,7 @@
     <ul class="lo-footer__links">
       <li><a href="{% url 'home' %}">Accueil</a></li>
       <li><a href="{% url 'post-list' %}">Articles</a></li>
-      {% if user.is_authenticated %}
-      <li><a href="{% url 'admin:index' %}">Administration</a></li>
-      {% endif %}
+      <li><a href="{% url 'ad-list' %}">Publicités</a></li>
     </ul>
 
     <p class="lo-footer__copy">© {% now "Y" %} Une faim de vie au Croisic</p>
