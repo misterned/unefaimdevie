@@ -663,43 +663,14 @@ body {
 }
 
 /* ════════════════════════════════
-   RESPONSIVE — TABLETTE (≤ 900px)
+   RESPONSIVE — TABLETTE + PAYSAGE (≤ 900px)
+   Burger actif dès ce seuil pour éviter le débordement
+   de la nav horizontale sur smartphones en paysage.
 ════════════════════════════════ */
 @media (max-width: 900px) {
 
-  /* Header : masquer la tagline, réduire les gaps */
-  .lo-header__tagline { display: none; }
-  .lo-header__nav { gap: 20px; }
-
-  /* Grille : 3 col → 2 col */
-  .lo-grid { grid-template-columns: repeat(2, 1fr); }
-
-  /* Card featured : annule le layout côte-à-côte */
-  .lo-card--featured {
-    grid-column: span 2;
-    display: flex;
-    flex-direction: column;
-  }
-  .lo-card--featured .lo-card__img {
-    height: auto;
-    aspect-ratio: 16 / 7;
-  }
-  .lo-card--featured .lo-card__body { justify-content: flex-start; }
-
-  /* Mosaïque : 4 col → 2 col */
-  .lo-mosaic { grid-template-columns: repeat(2, 1fr); }
-
-  /* Footer : wrap naturel */
-  .lo-footer { gap: 20px; }
-}
-
-/* ════════════════════════════════
-   RESPONSIVE — MOBILE (≤ 640px)
-════════════════════════════════ */
-@media (max-width: 640px) {
-
   /* ── Header ── */
-  .lo-header { padding: 0 20px; }
+  .lo-header__tagline { display: none; }
 
   .lo-header__main {
     flex-wrap: wrap;
@@ -707,8 +678,6 @@ body {
     gap: 0;
     align-items: center;
   }
-
-  .lo-header__logo { height: 44px; }
 
   /* Burger visible */
   .lo-burger { display: flex; }
@@ -731,7 +700,6 @@ body {
     padding: 6px 0 10px;
   }
 
-  /* Chaque item prend toute la largeur */
   .lo-header__nav li { width: 100%; }
 
   .lo-header__nav a {
@@ -741,12 +709,36 @@ body {
     letter-spacing: 0.08em;
   }
 
-  /* Séparateurs remplacés par un simple trait entre items */
   .lo-header__nav-sep { display: none; }
 
-  .lo-header__nav li + li:not(:has(.lo-header__nav-sep)) a {
-    border-top: 1px solid oklch(28% 0.02 50);
+  /* ── Grille : 3 col → 2 col ── */
+  .lo-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .lo-card--featured {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
   }
+  .lo-card--featured .lo-card__img {
+    height: auto;
+    aspect-ratio: 16 / 7;
+  }
+  .lo-card--featured .lo-card__body { justify-content: flex-start; }
+
+  /* ── Mosaïque : 4 col → 2 col ── */
+  .lo-mosaic { grid-template-columns: repeat(2, 1fr); }
+
+  /* ── Footer ── */
+  .lo-footer { gap: 20px; }
+}
+
+/* ════════════════════════════════
+   RESPONSIVE — MOBILE PORTRAIT (≤ 540px)
+════════════════════════════════ */
+@media (max-width: 540px) {
+
+  .lo-header { padding: 0 20px; }
+  .lo-header__logo { height: 44px; }
 
   /* ── Grille : 2 col → 1 col ── */
   .lo-grid { grid-template-columns: 1fr; }
