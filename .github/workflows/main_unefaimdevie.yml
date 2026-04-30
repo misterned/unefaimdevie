@@ -209,8 +209,8 @@ jobs:
             exit 1
           fi
 
-          echo "live_home_match=$(grep -nF 'eau sal' live_home.html || true)"
-          if ! grep -qF 'eau sal' live_home.html; then
+          echo "live_home_match=$(grep -nF 'lumiere-ouest.css' live_home.html || true)"
+          if ! grep -qF 'lumiere-ouest.css' live_home.html; then
             echo "Error: live site does not contain expected text after deployment."
             echo "(Oryx may be rebuilding from old code — check SCM_DO_BUILD_DURING_DEPLOYMENT in Azure App Settings)"
             exit 1
