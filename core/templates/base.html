@@ -84,6 +84,7 @@
 
   <script>
     (function () {
+      /* ── Burger ── */
       var burger = document.getElementById('lo-burger');
       var header = document.getElementById('lo-header');
       burger.addEventListener('click', function () {
@@ -95,6 +96,23 @@
           header.classList.remove('lo-header--open');
           burger.setAttribute('aria-expanded', 'false');
         });
+      });
+
+      /* ── Orientation des vignettes ── */
+      function orientImg(img) {
+        if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+          if (img.naturalWidth > img.naturalHeight) {
+            img.classList.add('lo-card__img--landscape');
+          }
+          /* Portrait : rien à ajouter, object-position:top est déjà le défaut */
+        }
+      }
+      document.querySelectorAll('.lo-card__img').forEach(function (img) {
+        if (img.complete) {
+          orientImg(img);
+        } else {
+          img.addEventListener('load', function () { orientImg(img); });
+        }
       });
     })();
   </script>

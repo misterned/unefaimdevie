@@ -252,10 +252,18 @@ body {
   width: 100%;
   aspect-ratio: 3 / 2;
   object-fit: cover;
+  object-position: top center; /* Portrait : montre le haut par défaut */
   display: block;
   transition: transform .4s ease;
 }
 .lo-card:hover .lo-card__img { transform: scale(1.03); }
+
+/* Paysage : image entière, fond neutre pour les bandes éventuelles */
+.lo-card__img--landscape {
+  object-fit: contain;
+  object-position: center;
+  background-color: var(--lo-cream);
+}
 
 .lo-card__body {
   padding: 22px 24px 28px;
@@ -377,21 +385,23 @@ body {
 ════════════════════════════════ */
 .lo-article__hero {
   position: relative;
-  height: clamp(380px, 55vh, 600px);
-  overflow: hidden;
+  /* Pas de hauteur fixe : l'image s'affiche entièrement */
 }
 
 .lo-article__hero img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center 25%;
+  width: 100%;
+  height: auto;
   display: block;
+  max-height: 85vh; /* Limite les très grandes images portrait */
+  object-fit: contain;
 }
 
 .lo-article__hero-overlay {
+  /* Dégradé positionné en bas de l'image via padding-bottom */
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, oklch(14% 0.012 55 / 0.6), transparent 60%);
+  background: linear-gradient(to top, oklch(14% 0.012 55 / 0.45), transparent 40%);
+  pointer-events: none;
 }
 
 .lo-article__content {
