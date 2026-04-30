@@ -204,19 +204,19 @@ jobs:
           for attempt in 1 2 3 4 5 6 7 8; do
             echo "Attempt $attempt..."
             if curl -fsSL "$LIVE_URL" -o live_home.html 2>/dev/null; then
-              if grep -qF 'lumiere-ouest.css' live_home.html; then
-                echo "live_home_match=$(grep -nF 'lumiere-ouest.css' live_home.html)"
+              if grep -qF 'lo-header' live_home.html; then
+                echo "live_home_match=$(grep -nF 'lo-header' live_home.html | head -1)"
                 echo "Live site verification passed (attempt $attempt)."
                 exit 0
               fi
-              echo "Site responding but app not ready yet (Azure placeholder page), retrying in 20s..."
+              echo "Site responding but Django app not ready yet, retrying in 20s..."
             else
               echo "Site not reachable yet, retrying in 20s..."
             fi
             sleep 20
           done
 
-          echo "live_home_match=$(grep -nF 'lumiere-ouest.css' live_home.html || true)"
+          echo "live_home_match=$(grep -nF 'lo-header' live_home.html | head -1 || true)"
           echo "Error: live site did not serve expected content after 8 attempts (~3 min)."
           echo "Check: Azure portal > App Service > Log stream, or SCM_DO_BUILD_DURING_DEPLOYMENT setting."
           exit 1
