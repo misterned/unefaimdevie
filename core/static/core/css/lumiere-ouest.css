@@ -515,26 +515,21 @@ body {
 
 .lo-ad-featured__inner {
   border: 1px solid var(--lo-rule);
-  padding: 28px 32px;
-}
-
-.lo-ad-featured__inner--with-img {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 32px;
-  align-items: center;
-}
-
-.lo-ad-featured__img-wrap {
   overflow: hidden;
-  aspect-ratio: 4 / 3;
 }
 
+/* Image au format naturel — bandeau, carré, portrait : tout s'adapte */
 .lo-ad-featured__img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   display: block;
+  max-height: 480px;
+  object-fit: contain;
+  background: var(--lo-cream);
+}
+
+.lo-ad-featured__body {
+  padding: 28px 32px;
 }
 
 .lo-ad-featured__label {
