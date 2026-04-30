@@ -691,10 +691,10 @@ body {
 }
 
 /* ════════════════════════════════
-   RESPONSIVE — BURGER (≤ 1024px)
-   Couvre iPad mini paysage (1024px) + tablettes + smartphones.
+   RESPONSIVE — BURGER (≤ 1200px)
+   Couvre iPad mini 6e gen paysage (1133px) + tablettes + smartphones.
 ════════════════════════════════ */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
 
   /* ── Header ── */
   .lo-header__main {
