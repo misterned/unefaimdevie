@@ -691,11 +691,10 @@ body {
 }
 
 /* ════════════════════════════════
-   RESPONSIVE — TABLETTE + PAYSAGE (≤ 900px)
-   Burger actif dès ce seuil pour éviter le débordement
-   de la nav horizontale sur smartphones en paysage.
+   RESPONSIVE — BURGER (≤ 1024px)
+   Couvre iPad mini paysage (1024px) + tablettes + smartphones.
 ════════════════════════════════ */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
 
   /* ── Header ── */
   .lo-header__main {
@@ -718,7 +717,7 @@ body {
   }
   .lo-header__tagline-place { display: none; }
 
-  /* Burger visible, repoussé à droite */
+  /* Burger visible */
   .lo-burger {
     display: flex;
     order: 3;
@@ -753,6 +752,12 @@ body {
   }
 
   .lo-header__nav-sep { display: none; }
+}
+
+/* ════════════════════════════════
+   RESPONSIVE — GRILLES (≤ 900px)
+════════════════════════════════ */
+@media (max-width: 900px) {
 
   /* ── Grille : 3 col → 2 col ── */
   .lo-grid { grid-template-columns: repeat(2, 1fr); }
