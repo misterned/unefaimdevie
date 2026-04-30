@@ -516,6 +516,24 @@ body {
   margin-bottom: 32px;
 }
 
+/* Conteneur responsive pour iframes Power BI (et vidéos embed) */
+.lo-embed-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.lo-embed-wrap iframe,
+.lo-embed-wrap video {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}
+
 /* ════════════════════════════════
    PUBLICITÉ À LA UNE
 ════════════════════════════════ */
