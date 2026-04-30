@@ -1,26 +1,90 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}Articles - Une faim de vie au Croisic{% endblock %}
+{% block title %}
+  {% if current_category %}{{ current_category }} — {% endif %}Articles — Une faim de vie
+{% endblock %}
 
 {% block content %}
-<h1 class="h3 section-title">Articles publiés</h1>
-<div class="row g-4">
+
+<div class="lo-section-wrap">
+
+  <!-- Titre de rubrique -->
+  <div class="lo-section-header">
+    <span class="lo-section-header__label">
+      {% if current_category %}{{ current_category }}{% else %}Tous les articles{% endif %}
+    </span>
+    <div class="lo-section-header__rule"></div>
+    {% if current_category %}
+      <a href="{% url 'post-list' %}" class="lo-section-header__link">Tout voir →</a>
+    {% endif %}
+  </div>
+
+  <!-- Grille -->
+  <div class="lo-grid" style="margin-bottom: 64px;">
     {% for post in posts %}
-        <div class="col-lg-6">
-            <article class="card h-100">
-                {% if post.image %}
-                    <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
-                {% endif %}
-                <div class="card-body">
-                    <h2 class="h5">{{ post.title }}</h2>
-                    <p class="text-muted small">Par {{ post.author }} · {{ post.created_at|date:"d/m/Y H:i" }} · {{ post.category }}</p>
-                    <p>{{ post.body|truncatewords:30 }}</p>
-                    <a href="{% url 'post-detail' post.pk %}" class="btn btn-outline-primary btn-sm">Lire l'article</a>
-                </div>
-            </article>
+
+      {% if forloop.first and not current_category %}
+      <!-- Premier article en featured -->
+      <a href="{{ post.get_absolute_url }}" class="lo-card lo-card--featured">
+        <div class="lo-card__img-wrap">
+          {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="lo-card__img" />
+          {% else %}
+            <div style="height:100%;" class="lo-img-placeholder"></div>
+          {% endif %}
         </div>
+        <div class="lo-card__body">
+          {% if post.category %}
+            <div class="lo-card__cat">{{ post.category }}</div>
+          {% endif %}
+          <h2 class="lo-card__title">{{ post.title }}</h2>
+          <div class="lo-card__meta">{{ post.created_at|date:"j F Y" }}</div>
+        </div>
+      </a>
+
+      {% else %}
+      <a href="{{ post.get_absolute_url }}" class="lo-card">
+        <div class="lo-card__img-wrap">
+          {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="lo-card__img" />
+          {% else %}
+            <div style="aspect-ratio:3/2;" class="lo-img-placeholder"></div>
+          {% endif %}
+        </div>
+        <div class="lo-card__body">
+          {% if post.category %}
+            <div class="lo-card__cat">{{ post.category }}</div>
+          {% endif %}
+          <h2 class="lo-card__title">{{ post.title }}</h2>
+          <div class="lo-card__meta">{{ post.created_at|date:"j F Y" }}</div>
+        </div>
+      </a>
+      {% endif %}
+
     {% empty %}
-        <p>Aucun article disponible.</p>
+      <p style="padding: 48px; grid-column: 1/-1; color: var(--lo-ink-lt);">
+        Aucun article trouvé.
+      </p>
     {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if is_paginated %}
+  <div style="display:flex; justify-content:center; gap:12px; padding-bottom:64px; font-family:var(--lo-font-body); font-size:13px; letter-spacing:0.1em;">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}"
+         style="color:var(--lo-terra); text-decoration:none;">← Précédent</a>
+    {% endif %}
+    <span style="color:var(--lo-ink-lt);">
+      Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+    </span>
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}"
+         style="color:var(--lo-terra); text-decoration:none;">Suivant →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}

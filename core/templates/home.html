@@ -1,71 +1,119 @@
-{% extends 'base.html' %}
-{% load static %}oui à tous
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}Accueil - Une faim de vie au Croisic{% endblock %}
-{% block meta_description %}Webzine local du Croisic : articles culturels, événements locaux, regards bienveillants et parfois humoristiques sur la vie au Croisic et alentours.{% endblock %}
+{% block title %}Une faim de vie au Croisic{% endblock %}
 
 {% block content %}
-<div class="hero d-md-flex justify-content-between align-items-center gap-4">
-    <div>
-        <h1 class="display-6">Journal (presque) culturel du Croisic</h1>
-        <p class="lead mb-0">Webzine très souvent local, parfois sérieux, rarement ennuyeux.</p>
-    </div>
-    <div class="text-md-end mt-3 mt-md-0">
-        <img src="{% static 'core/images/logo.png' %}" alt="Logo Une faim de vie" class="img-fluid" style="max-height: 130px; width: auto;">
-    </div>
-</div>
 
-<section class="mb-4">
-    <h2 class="h5 section-title">Que trouverez vous ici ?</h2>
-    <ul class="list-favicon list-favicon-md">
-        <li>Des articles au sujet des événements culturels, des initiatives et des plaisirs partagés au Croisic</li>
-        <li>Nos regards sont bienveillants, culturels, parfois sérieux souvent humoristiques, jamais figés</li>
-        <li>Vos commentaires sont les bienvenus mais modérés</li>
-        <li>La diffusion de publicité ici se fait à l'ancienne après rencontre en "présentiel" avec Stef sur les quais ou ailleurs...</li>
-    </ul>
-</section>
+{% if hero_post %}
+<!-- ══ HERO PRINCIPAL ══ -->
+<a href="{{ hero_post.get_absolute_url }}" style="display:block; text-decoration:none;">
+  <div class="lo-hero">
 
-{% if featured_ad %}
-<section class="mb-4">
-    <h2 class="h5 section-title">Votre webzine vous recommande</h2>
-    <div class="card">
-        {% if featured_ad.image %}
-            <img src="{{ featured_ad.image.url }}" class="card-img-top" alt="{{ featured_ad.title }}" style="max-height: 220px; object-fit: cover;">
-        {% endif %}
-        <div class="card-body">
-            <h3 class="h5 mb-1">{{ featured_ad.title }}</h3>
-            <p class="mb-0">{{ featured_ad.text }}</p>
-        </div>
+    {% if hero_post.image %}
+      <img src="{{ hero_post.image.url }}"
+           alt="{{ hero_post.title }}"
+           class="lo-hero__img" />
+    {% else %}
+      <div class="lo-hero__img lo-img-placeholder"></div>
+    {% endif %}
+
+    <div class="lo-hero__overlay">
+      <div class="lo-hero__eyebrow">
+        {% if hero_post.category %}{{ hero_post.category }} · {% endif %}
+        {{ hero_post.created_at|date:"j F Y" }}
+      </div>
+      <h1 class="lo-hero__title">{{ hero_post.title }}</h1>
+      <span class="lo-hero__btn">Lire l'article →</span>
     </div>
-</section>
+
+  </div>
+</a>
 {% endif %}
+<!-- ══ /HERO ══ -->
 
-<h2 class="h4 section-title">Derniers articles</h2>
-<div class="row g-4">
-    {% for post in posts|slice:":6" %}
-        <div class="col-md-6">
-            <div class="card h-100">
-                {% if post.image %}
-                    <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
-                {% endif %}
-                <div class="card-body">
-                    <h3 class="h5 card-title">{{ post.title }}</h3>
-                    <p class="text-muted small">{{ post.category }} · {{ post.created_at|date:"d/m/Y" }}</p>
-                    <p class="card-text">{{ post.body|truncatewords:25 }}</p>
-                    <a class="btn btn-outline-primary btn-sm" href="{% url 'post-detail' post.pk %}">Lire</a>
-                </div>
-            </div>
-        </div>
-    {% empty %}
-        <p>Aucun article publié pour le moment.</p>
-    {% endfor %}
+
+<!-- ══ GRILLE DES DERNIERS ARTICLES ══ -->
+<div class="lo-section-wrap">
+  <div class="lo-section-header">
+    <span class="lo-section-header__label">Derniers articles</span>
+    <div class="lo-section-header__rule"></div>
+    <a href="{% url 'post-list' %}" class="lo-section-header__link">Voir tous →</a>
+  </div>
 </div>
 
-<section class="mt-4">
-    <h2 class="h5 section-title">Explorer le webzine</h2>
-    <ul class="list-favicon list-favicon-lg">
-        <li><a href="{% url 'post-list' %}">Voir tous les articles</a></li>
-        <li><a href="{% url 'ad-list' %}">Découvrir les publicités locales</a></li>
-    </ul>
-</section>
+<div class="lo-section-wrap">
+  <div class="lo-grid">
+
+    {% for post in recent_posts %}
+
+      {% if forloop.first %}
+      <!-- Article featured (occupe 2 colonnes) -->
+      <a href="{{ post.get_absolute_url }}" class="lo-card lo-card--featured">
+        <div class="lo-card__img-wrap">
+          {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="lo-card__img" />
+          {% else %}
+            <div style="height:100%;" class="lo-img-placeholder"></div>
+          {% endif %}
+        </div>
+        <div class="lo-card__body">
+          {% if post.category %}
+            <div class="lo-card__cat">{{ post.category }}</div>
+          {% endif %}
+          <h2 class="lo-card__title">{{ post.title }}</h2>
+          <div class="lo-card__meta">{{ post.created_at|date:"j F Y" }}</div>
+        </div>
+      </a>
+
+      {% else %}
+      <!-- Article standard -->
+      <a href="{{ post.get_absolute_url }}" class="lo-card">
+        <div class="lo-card__img-wrap">
+          {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="lo-card__img" />
+          {% else %}
+            <div style="aspect-ratio:3/2;" class="lo-img-placeholder"></div>
+          {% endif %}
+        </div>
+        <div class="lo-card__body">
+          {% if post.category %}
+            <div class="lo-card__cat">{{ post.category }}</div>
+          {% endif %}
+          <h2 class="lo-card__title">{{ post.title }}</h2>
+          <div class="lo-card__meta">{{ post.created_at|date:"j F Y" }}</div>
+        </div>
+      </a>
+      {% endif %}
+
+    {% empty %}
+      <p style="padding:48px; color:var(--lo-ink-lt);">Aucun article publié pour le moment.</p>
+    {% endfor %}
+
+  </div>
+
+  <!-- ══ MOSAÏQUE ══ -->
+  {% if mosaic_posts %}
+  <div class="lo-mosaic">
+    {% for post in mosaic_posts %}
+    <a href="{{ post.get_absolute_url }}" class="lo-mosaic__cell">
+      {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" />
+      {% else %}
+        <div class="lo-mosaic__ph lo-img-placeholder"></div>
+      {% endif %}
+      <div class="lo-mosaic__overlay">
+        {% if post.category %}
+          <div class="lo-mosaic__cat">{{ post.category }}</div>
+        {% endif %}
+        <div class="lo-mosaic__title">{{ post.title }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <!-- ══ /MOSAÏQUE ══ -->
+
+</div>
+
 {% endblock %}

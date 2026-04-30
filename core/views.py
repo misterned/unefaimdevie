@@ -20,52 +20,66 @@ from .services import (
 
 
 class AnimateurRequiredMixin(UserPassesTestMixin):
-    """Mixin de permission : accès réservé aux animateurs/admins."""
+    """Mixin de permission : accès réservé aux animateurs/admins."""
     def test_func(self):
         return user_is_animateur(self.request.user)
 
 
 class HomeView(ListView):
-    """Vue d'accueil : liste les posts publiés et affiche la pub en vedette."""
+    """Vue d'accueil : hero, grille des derniers articles et mosaïque."""
     model = Post
     template_name = "home.html"
     context_object_name = "posts"
 
     def get_queryset(self):
-        """Retourne les posts publiés uniquement."""
         return Post.objects.filter(status=Post.Status.PUBLISHED)
 
     def get_context_data(self, **kwargs):
-        """Ajoute la pub en vedette au contexte."""
         context = super().get_context_data(**kwargs)
-        context["featured_ad"] = Advertisement.objects.filter(
-            status=Advertisement.Status.APPROVED, featured=True
-        ).first()
+        qs = Post.objects.filter(status=Post.Status.PUBLISHED).order_by("-created_at")
+        context["hero_post"] = qs.first()
+        context["recent_posts"] = qs[:5]
+        context["mosaic_posts"] = qs[5:9]
         return context
 
 
 class PostListView(ListView):
-    """Vue liste des posts publiés."""
+    """Vue liste des posts publiés, avec filtrage par catégorie."""
     model = Post
     template_name = "posts/post_list.html"
     context_object_name = "posts"
+    paginate_by = 9
 
     def get_queryset(self):
-        """Retourne les posts publiés uniquement."""
-        return Post.objects.filter(status=Post.Status.PUBLISHED)
+        qs = Post.objects.filter(status=Post.Status.PUBLISHED)
+        categorie = self.request.GET.get("categorie")
+        if categorie:
+            qs = qs.filter(category__iexact=categorie)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_category"] = self.request.GET.get("categorie", "")
+        return context
 
 
 class PostDetailView(DetailView):
-    """Vue détail d'un post, affiche les commentaires validés."""
+    """Vue détail d'un post, affiche les commentaires validés et la navigation."""
     model = Post
     template_name = "posts/post_detail.html"
     context_object_name = "post"
 
     def get_context_data(self, **kwargs):
-        """Ajoute les commentaires validés et droits d'édition au contexte."""
         context = super().get_context_data(**kwargs)
         context["comments"] = self.object.comments.filter(status=Comment.Status.APPROVED)
         context["can_edit_post"] = can_manage_post(self.request.user, self.object)
+        published = Post.objects.filter(status=Post.Status.PUBLISHED).order_by("-created_at")
+        context["previous_post"] = (
+            published.filter(created_at__lt=self.object.created_at).first()
+        )
+        context["next_post"] = (
+            published.filter(created_at__gt=self.object.created_at).order_by("created_at").first()
+        )
         return context
 
 
@@ -191,6 +205,3 @@ class AdvertisementListView(ListView):
 
     def get_queryset(self):
         return Advertisement.objects.filter(status=Advertisement.Status.APPROVED)
-
-
-

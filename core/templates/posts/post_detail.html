@@ -1,108 +1,149 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}{{ post.title }} - Une faim de vie au Croisic{% endblock %}
-{% block meta_description %}{{ post.body|truncatewords:25 }}{% endblock %}
-{% block og_title %}{{ post.title }} - Une faim de vie au Croisic{% endblock %}
-{% block og_description %}{{ post.body|truncatewords:25 }}{% endblock %}
-{% block og_type %}article{% endblock %}
-{% block og_image %}{% if post.image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}">{% endif %}{% endblock %}
-{% block head_extra %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "{{ post.title|escapejs }}",
-  "author": {"@type": "Person", "name": "{{ post.author|escapejs }}"},
-  "datePublished": "{{ post.created_at|date:'c' }}",
-  "dateModified": "{{ post.updated_at|date:'c' }}",
-  "description": "{{ post.body|truncatewords:25|escapejs }}"{% if post.image %},
-  "image": "{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}"{% endif %}
-}
-</script>
-{% endblock %}
+{% block title %}{{ post.title }} — Une faim de vie{% endblock %}
 
 {% block content %}
-<article class="mb-4">
-    <h1 class="h2 section-title">{{ post.title }}</h1>
-    <p class="text-muted">Par {{ post.author }} · {{ post.created_at|date:"d/m/Y H:i" }} · {{ post.category }}</p>
 
-    {% if post.image %}
-        <img src="{{ post.image.url }}" class="img-fluid rounded mb-3" alt="{{ post.title }}">
+<article class="lo-fade-in">
+
+  <!-- ══ HERO IMAGE ══ -->
+  {% if post.image %}
+  <div class="lo-article__hero">
+    <img src="{{ post.image.url }}" alt="{{ post.title }}" />
+    <div class="lo-article__hero-overlay"></div>
+  </div>
+  {% endif %}
+
+  <!-- ══ CONTENU ARTICLE ══ -->
+  <div class="lo-article__content">
+
+    <!-- Retour -->
+    <a href="{% url 'post-list' %}" class="lo-article__back">Retour aux articles</a>
+
+    <!-- Catégorie -->
+    {% if post.category %}
+      <div class="lo-article__cat">{{ post.category }}</div>
     {% endif %}
 
-    <div class="mb-4">{{ post.body|linebreaks }}</div>
+    <!-- Titre -->
+    <h1 class="lo-article__title">{{ post.title }}</h1>
 
-    {% if post.video_url or post.notebook_html or post.video_file or post.powerbi_embed_code %}
-        <section class="mb-4">
-            <h2 class="h5 section-title">Ressources de l'article</h2>
-            <ul class="list-favicon list-favicon-md mb-0">
-                {% if post.video_url %}
-                    <li><a href="{{ post.video_url }}" target="_blank" rel="noopener">Voir la vidéo liée</a></li>
-                {% endif %}
-                {% if post.notebook_html %}
-                    <li><a href="{{ post.notebook_html.url }}" target="_blank" rel="noopener">Ouvrir le notebook rendu (HTML)</a></li>
-                {% endif %}
-                {% if post.video_file %}
-                    <li>Une vidéo intégrée est disponible plus bas dans la page.</li>
-                {% endif %}
-                {% if post.powerbi_embed_code %}
-                    <li>Un rapport Power BI est disponible plus bas dans la page.</li>
-                {% endif %}
-            </ul>
-        </section>
+    <!-- Byline -->
+    <div class="lo-article__byline">
+      <span>{{ post.created_at|date:"j F Y" }}</span>
+      <span class="lo-article__byline-dot">·</span>
+      <span>Le Croisic</span>
+      <span class="lo-article__byline-dot">·</span>
+      <span>Une faim de vie</span>
+    </div>
+
+    <!-- Corps de l'article -->
+    <div class="lo-article__body">
+      {{ post.body|safe }}
+    </div>
+
+    <!-- Ressources multimédia -->
+    {% if post.video_url or post.video_file or post.notebook_html or post.powerbi_embed_code %}
+    <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--lo-rule);">
+      {% if post.video_url %}
+      <section style="margin-bottom: 32px;">
+        <a href="{{ post.video_url }}" target="_blank" rel="noopener"
+           style="color: var(--lo-terra); font-size: 14px; letter-spacing: 0.1em;">
+          → Voir la vidéo liée
+        </a>
+      </section>
+      {% endif %}
+      {% if post.video_file %}
+      <section style="margin-bottom: 32px;">
+        <video controls style="width:100%;">
+          <source src="{{ post.video_file.url }}">
+          Votre navigateur ne supporte pas la lecture vidéo.
+        </video>
+      </section>
+      {% endif %}
+      {% if post.notebook_html %}
+      <section style="margin-bottom: 32px;">
+        <a href="{{ post.notebook_html.url }}" target="_blank" rel="noopener"
+           style="color: var(--lo-terra); font-size: 14px; letter-spacing: 0.1em;">
+          → Ouvrir le notebook (HTML)
+        </a>
+      </section>
+      {% endif %}
+      {% if post.powerbi_embed_code %}
+      <section style="margin-bottom: 32px; aspect-ratio: 16/9;">
+        {{ post.powerbi_embed_code|safe }}
+      </section>
+      {% endif %}
+    </div>
     {% endif %}
 
-    {% if post.video_url %}
-        <section class="mb-4">
-            <h2 class="h5">Vidéo</h2>
-            <a href="{{ post.video_url }}" target="_blank" rel="noopener">Voir la vidéo</a>
-        </section>
+    <!-- Actions -->
+    <div style="margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap;">
+      <a href="{% url 'post-comment' post.pk %}"
+         style="color: var(--lo-terra); font-size: 13px; letter-spacing: 0.12em; text-decoration: none; border: 1px solid var(--lo-terra); padding: 9px 20px;">
+        Laisser un commentaire
+      </a>
+      {% if can_edit_post %}
+      <a href="{% url 'post-update' post.pk %}"
+         style="color: var(--lo-ink-lt); font-size: 13px; letter-spacing: 0.12em; text-decoration: none; border: 1px solid var(--lo-rule); padding: 9px 20px;">
+        Modifier l'article
+      </a>
+      {% endif %}
+    </div>
+
+    <!-- Commentaires -->
+    {% if comments %}
+    <section style="margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--lo-rule);">
+      <div class="lo-section-header" style="padding-top: 0;">
+        <span class="lo-section-header__label">Commentaires</span>
+        <div class="lo-section-header__rule"></div>
+      </div>
+      {% for comment in comments %}
+      <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--lo-rule);">
+        <p style="font-size: 12px; letter-spacing: 0.08em; color: var(--lo-ink-lt); margin-bottom: 8px;">
+          <strong style="color: var(--lo-ink-mid);">{{ comment.display_author }}</strong>
+          · {{ comment.created_at|date:"j F Y" }}
+        </p>
+        <p style="font-size: 15px; line-height: 1.7; color: var(--lo-ink-mid); margin: 0;">
+          {{ comment.content|linebreaks }}
+        </p>
+      </div>
+      {% endfor %}
+    </section>
     {% endif %}
 
-    {% if post.video_file %}
-        <section class="mb-4">
-            <h2 class="h5">Vidéo intégrée</h2>
-            <video controls class="w-100">
-                <source src="{{ post.video_file.url }}">
-                Votre navigateur ne supporte pas la lecture vidéo.
-            </video>
-        </section>
+    <!-- ── Navigation entre articles ── -->
+    {% if previous_post or next_post %}
+    <nav style="
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--lo-rule);
+      font-size: 13px;
+      letter-spacing: 0.10em;
+    ">
+      {% if previous_post %}
+        <a href="{{ previous_post.get_absolute_url }}" style="color:var(--lo-terra); text-decoration:none;">
+          ← {{ previous_post.title|truncatechars:50 }}
+        </a>
+      {% else %}
+        <span></span>
+      {% endif %}
+
+      {% if next_post %}
+        <a href="{{ next_post.get_absolute_url }}" style="color:var(--lo-terra); text-decoration:none; text-align:right;">
+          {{ next_post.title|truncatechars:50 }} →
+        </a>
+      {% endif %}
+    </nav>
     {% endif %}
 
-    {% if post.notebook_html %}
-        <section class="mb-4">
-            <h2 class="h5">Notebook Python</h2>
-            <a href="{{ post.notebook_html.url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">Ouvrir le notebook rendu (HTML)</a>
-        </section>
-    {% endif %}
+  </div>
+  <!-- ══ /CONTENU ══ -->
 
-    {% if post.powerbi_embed_code %}
-        <section class="mb-4">
-            <h2 class="h5">Rapport Power BI</h2>
-            <div class="ratio ratio-16x9">
-                {{ post.powerbi_embed_code|safe }}
-            </div>
-        </section>
-    {% endif %}
 </article>
 
-<div class="d-flex gap-2 mb-4">
-    <a class="btn btn-primary" href="{% url 'post-comment' post.pk %}">Commenter</a>
-
-    {% if can_edit_post %}
-        <a class="btn btn-outline-secondary" href="{% url 'post-update' post.pk %}">Modifier l'article</a>
-    {% endif %}
-</div>
-
-<section>
-    <h2 class="h4">Commentaires validés</h2>
-    {% for comment in comments %}
-        <div class="border rounded p-3 mb-3">
-            <p class="mb-1"><strong>{{ comment.display_author }}</strong> <span class="text-muted small">{{ comment.created_at|date:"d/m/Y H:i" }}</span></p>
-            <p class="mb-0">{{ comment.content|linebreaks }}</p>
-        </div>
-    {% empty %}
-        <p>Aucun commentaire validé pour cet article.</p>
-    {% endfor %}
-</section>
 {% endblock %}
