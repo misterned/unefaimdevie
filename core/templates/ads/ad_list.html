@@ -1,24 +1,41 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Publicités validées{% endblock %}
+{% block title %}Publicités locales — Une faim de vie{% endblock %}
 
 {% block content %}
-<h1 class="h3 section-title">Publicités locales</h1>
-<div class="row g-4">
+
+<div class="lo-section-wrap">
+
+  <div class="lo-section-header">
+    <span class="lo-section-header__label">Publicités locales</span>
+    <div class="lo-section-header__rule"></div>
+  </div>
+
+  <div class="lo-grid" style="margin-bottom: 64px;">
     {% for ad in ads %}
-        <div class="col-md-6">
-            <div class="card h-100">
-                {% if ad.image %}
-                    <img src="{{ ad.image.url }}" class="card-img-top" alt="{{ ad.title }}">
-                {% endif %}
-                <div class="card-body">
-                    <h2 class="h5">{{ ad.title }}</h2>
-                    <p>{{ ad.text }}</p>
-                </div>
-            </div>
-        </div>
+    <div class="lo-card" style="cursor: default;">
+      {% if ad.image %}
+      <div class="lo-card__img-wrap">
+        <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="lo-card__img" />
+      </div>
+      {% else %}
+      <div class="lo-card__img-wrap">
+        <div style="aspect-ratio:3/2;" class="lo-img-placeholder"></div>
+      </div>
+      {% endif %}
+      <div class="lo-card__body">
+        <div class="lo-card__cat">{{ ad.merchant }}</div>
+        <h2 class="lo-card__title">{{ ad.title }}</h2>
+        <p class="lo-card__excerpt">{{ ad.text }}</p>
+      </div>
+    </div>
     {% empty %}
-        <p>Aucune publicité validée pour le moment.</p>
+    <p style="padding: 48px; grid-column: 1/-1; color: var(--lo-ink-lt);">
+      Aucune publicité validée pour le moment.
+    </p>
     {% endfor %}
+  </div>
+
 </div>
+
 {% endblock %}

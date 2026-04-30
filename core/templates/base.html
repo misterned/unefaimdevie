@@ -43,6 +43,8 @@
           <li><a href="{% url 'post-list' %}?categorie=culture" {% if request.GET.categorie == 'culture' %}class="active"{% endif %}>Culture</a></li>
           <li><span class="lo-header__nav-sep"></span></li>
           <li><a href="{% url 'post-list' %}">Tous les articles</a></li>
+          <li><span class="lo-header__nav-sep"></span></li>
+          <li><a href="{% url 'ad-list' %}" {% if request.resolver_match.url_name == 'ad-list' %}class="active"{% endif %}>Publicités</a></li>
           {% if user.is_authenticated %}
           <li><span class="lo-header__nav-sep"></span></li>
           <li><a href="{% url 'admin:index' %}">Admin</a></li>

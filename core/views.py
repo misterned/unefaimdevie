@@ -40,6 +40,9 @@ class HomeView(ListView):
         context["hero_post"] = qs.first()
         context["recent_posts"] = qs[:5]
         context["mosaic_posts"] = qs[5:9]
+        context["featured_ad"] = Advertisement.objects.filter(
+            status=Advertisement.Status.APPROVED, featured=True
+        ).first()
         return context
 
 

@@ -33,6 +33,30 @@
 <!-- ══ /HERO ══ -->
 
 
+<!-- ══ PUBLICITÉ À LA UNE ══ -->
+{% if featured_ad %}
+<div class="lo-section-wrap lo-ad-featured">
+  {% if featured_ad.image %}
+  <div class="lo-ad-featured__inner lo-ad-featured__inner--with-img">
+    <div class="lo-ad-featured__img-wrap">
+      <img src="{{ featured_ad.image.url }}" alt="{{ featured_ad.title }}" class="lo-ad-featured__img" />
+    </div>
+    <div class="lo-ad-featured__body">
+  {% else %}
+  <div class="lo-ad-featured__inner">
+    <div class="lo-ad-featured__body">
+  {% endif %}
+      <div class="lo-ad-featured__label">Recommandé par le webzine</div>
+      <h2 class="lo-ad-featured__title">{{ featured_ad.title }}</h2>
+      <p class="lo-ad-featured__text">{{ featured_ad.text }}</p>
+      <div class="lo-ad-featured__merchant">{{ featured_ad.merchant }}</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+<!-- ══ /PUBLICITÉ À LA UNE ══ -->
+
+
 <!-- ══ GRILLE DES DERNIERS ARTICLES ══ -->
 <div class="lo-section-wrap">
   <div class="lo-section-header">
