@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from .models import Post
 from .services import user_is_animateur
 
@@ -7,9 +9,10 @@ def role_flags(request):
     nav_categories = (
         Post.objects.filter(status=Post.Status.PUBLISHED)
         .exclude(category="")
-        .values_list("category", flat=True)
-        .distinct()
-        .order_by("category")
+        .values("category")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+        .values_list("category", flat=True)[:5]
     )
     return {
         "is_animateur": user_is_animateur(user),
