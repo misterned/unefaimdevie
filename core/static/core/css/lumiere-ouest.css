@@ -625,3 +625,105 @@ body {
   );
   display: flex; align-items: center; justify-content: center;
 }
+
+/* ════════════════════════════════
+   RESPONSIVE — TABLETTE (≤ 900px)
+════════════════════════════════ */
+@media (max-width: 900px) {
+
+  /* Header : masquer la tagline, réduire les gaps */
+  .lo-header__tagline { display: none; }
+  .lo-header__nav { gap: 20px; }
+
+  /* Grille : 3 col → 2 col */
+  .lo-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Card featured : annule le span-2 et le layout côte-à-côte */
+  .lo-card--featured {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+  }
+  .lo-card--featured .lo-card__img {
+    height: auto;
+    aspect-ratio: 16 / 7;
+  }
+  .lo-card--featured .lo-card__body { justify-content: flex-start; }
+
+  /* Mosaïque : 4 col → 2 col */
+  .lo-mosaic { grid-template-columns: repeat(2, 1fr); }
+
+  /* Footer : wrap naturel */
+  .lo-footer { gap: 20px; }
+}
+
+/* ════════════════════════════════
+   RESPONSIVE — MOBILE (≤ 640px)
+════════════════════════════════ */
+@media (max-width: 640px) {
+
+  /* Header : logo sur une ligne, nav scrollable en dessous */
+  .lo-header { padding: 0 20px; }
+
+  .lo-header__main {
+    flex-wrap: wrap;
+    padding: 14px 0 0;
+    gap: 0;
+  }
+
+  .lo-header__logo {
+    height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .lo-header__nav {
+    width: 100%;
+    order: 3;
+    overflow-x: auto;
+    padding: 8px 0 14px;
+    gap: 16px;
+    /* Masquer la scrollbar visuellement */
+    scrollbar-width: none;
+  }
+  .lo-header__nav::-webkit-scrollbar { display: none; }
+
+  /* Grille : 2 col → 1 col */
+  .lo-grid { grid-template-columns: 1fr; }
+
+  /* Card featured pleine largeur */
+  .lo-card--featured {
+    grid-column: span 1;
+  }
+  .lo-card--featured .lo-card__img { aspect-ratio: 3 / 2; }
+
+  /* Mosaïque : 2 col → 1 col */
+  .lo-mosaic { grid-template-columns: 1fr; }
+  .lo-mosaic__cell { height: 200px; }
+
+  /* Hero : hauteur réduite */
+  .lo-hero { height: clamp(320px, 60vh, 480px); }
+
+  /* Byline article : wrap sur petits écrans */
+  .lo-article__byline {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+
+  /* Lettrine désactivée sur mobile (trop envahissante) */
+  .lo-article__body > p:first-child::first-letter {
+    font-size: 1em;
+    line-height: inherit;
+    float: none;
+    margin: 0;
+    color: inherit;
+  }
+
+  /* Footer : empilé */
+  .lo-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .lo-footer__links { flex-wrap: wrap; gap: 16px; }
+}
