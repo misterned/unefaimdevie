@@ -698,8 +698,6 @@ body {
 @media (max-width: 900px) {
 
   /* ── Header ── */
-  .lo-header__tagline { display: none; }
-
   .lo-header__main {
     flex-wrap: wrap;
     padding: 12px 0 12px;
@@ -707,14 +705,31 @@ body {
     align-items: center;
   }
 
-  /* Burger visible */
-  .lo-burger { display: flex; }
+  /* Tagline : masquer "Le Croisic", glisser le sous-titre entre logo et burger */
+  .lo-header__tagline {
+    order: 2;
+    flex: 1;
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-align: left;
+    padding: 0 10px;
+    line-height: 1.4;
+    white-space: normal;
+  }
+  .lo-header__tagline-place { display: none; }
 
-  /* Nav cachée par défaut, révélée à l'ouverture */
+  /* Burger visible, repoussé à droite */
+  .lo-burger {
+    display: flex;
+    order: 3;
+    margin-left: 0;
+  }
+
+  /* Nav cachée par défaut, sous la ligne logo/tagline/burger */
   #lo-nav {
     display: none;
     width: 100%;
-    order: 3;
+    order: 4;
     border-top: 1px solid oklch(28% 0.02 50);
     margin-top: 12px;
   }
