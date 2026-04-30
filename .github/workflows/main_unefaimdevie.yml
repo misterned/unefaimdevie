@@ -194,26 +194,30 @@ jobs:
           LIVE_URL="${LIVE_URL%/}/"
           echo "live_url=$LIVE_URL"
 
-          fetched=0
-          for attempt in 1 2 3 4 5; do
+          # Attente initiale : Azure App Service peut servir sa page de démarrage
+          # pendant 30-60 s le temps que Gunicorn s'initialise après déploiement.
+          echo "Waiting 40s for app service to initialize..."
+          sleep 40
+
+          # Boucle : réessaie tant que la page ne contient pas notre marqueur,
+          # même si curl réussit (Azure peut retourner 200 sur sa page par défaut).
+          for attempt in 1 2 3 4 5 6 7 8; do
+            echo "Attempt $attempt..."
             if curl -fsSL "$LIVE_URL" -o live_home.html 2>/dev/null; then
-              fetched=1
-              break
+              if grep -qF 'lumiere-ouest.css' live_home.html; then
+                echo "live_home_match=$(grep -nF 'lumiere-ouest.css' live_home.html)"
+                echo "Live site verification passed (attempt $attempt)."
+                exit 0
+              fi
+              echo "Site responding but app not ready yet (Azure placeholder page), retrying in 20s..."
+            else
+              echo "Site not reachable yet, retrying in 20s..."
             fi
-            echo "Live check attempt $attempt failed, retrying in 10s..."
-            sleep 10
+            sleep 20
           done
 
-          if [ "$fetched" -eq 0 ]; then
-            echo "Error: could not reach live site after 5 attempts."
-            exit 1
-          fi
-
           echo "live_home_match=$(grep -nF 'lumiere-ouest.css' live_home.html || true)"
-          if ! grep -qF 'lumiere-ouest.css' live_home.html; then
-            echo "Error: live site does not contain expected text after deployment."
-            echo "(Oryx may be rebuilding from old code — check SCM_DO_BUILD_DURING_DEPLOYMENT in Azure App Settings)"
-            exit 1
-          fi
-          echo "Live site verification passed."
+          echo "Error: live site did not serve expected content after 8 attempts (~3 min)."
+          echo "Check: Azure portal > App Service > Log stream, or SCM_DO_BUILD_DURING_DEPLOYMENT setting."
+          exit 1
           
