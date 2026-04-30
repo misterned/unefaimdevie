@@ -83,7 +83,7 @@ jobs:
 
       - name: Verify artifact content
         run: |
-          echo "artifact_commit_check=$(grep -nF 'Que trouverez vous ici ?' core/templates/home.html || true)"
+          echo "artifact_commit_check=$(grep -nF 'lo-hero' core/templates/home.html || true)"
           echo "artifact_home_preview:"
           sed -n '1,40p' core/templates/home.html
 
@@ -174,7 +174,7 @@ jobs:
           echo "--- Searching for template text in /home/site (via Kudu command API) ---"
           curl -fsS -u "$USERNAME:$PASSWORD" \
             -H 'Content-Type: application/json' \
-            -d '{"command":"grep -rF \"Que trouverez vous ici ?\" /home/site/ 2>/dev/null | head -5 || echo NOT_FOUND","dir":"/home/site"}' \
+            -d '{"command":"grep -rF \"lo-hero\" /home/site/core/templates/home.html 2>/dev/null | head -5 || echo NOT_FOUND","dir":"/home/site"}' \
             "$SCM_URL/api/command" 2>/dev/null | python3 -c "import sys,json; r=json.load(sys.stdin); print(r.get('Output','(no output)'))" || true
 
           echo "--- DEPLOY_SHA in wwwroot ---"
@@ -182,7 +182,7 @@ jobs:
 
           echo "--- home.html in wwwroot/core/templates ---"
           curl -fsS -u "$USERNAME:$PASSWORD" "$SCM_URL/api/vfs/site/wwwroot/core/templates/home.html" 2>/dev/null \
-            | grep -iF 'trouverez\|la une' || echo "(not found or no matching line)"
+            | grep -iF 'lo-hero' || echo "(not found or no matching line)"
 
       - name: Verify live homepage content
         run: |
@@ -209,8 +209,8 @@ jobs:
             exit 1
           fi
 
-          echo "live_home_match=$(grep -nF 'Que trouverez vous ici ?' live_home.html || true)"
-          if ! grep -qF 'Que trouverez vous ici ?' live_home.html; then
+          echo "live_home_match=$(grep -nF 'Loire-Atlantique' live_home.html || true)"
+          if ! grep -qF 'Loire-Atlantique' live_home.html; then
             echo "Error: live site does not contain expected text after deployment."
             echo "(Oryx may be rebuilding from old code — check SCM_DO_BUILD_DURING_DEPLOYMENT in Azure App Settings)"
             exit 1
