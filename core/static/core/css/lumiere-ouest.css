@@ -754,10 +754,15 @@ body {
   .lo-header__nav-sep { display: none; }
 }
 
+
 /* ════════════════════════════════
    RESPONSIVE — GRILLES (≤ 900px)
 ════════════════════════════════ */
 @media (max-width: 900px) {
+  /* Inverser l'ordre titre/image sur les cartes en mobile/tablette portrait */
+  .lo-card {
+    flex-direction: column-reverse;
+  }
 
   /* ── Grille : 3 col → 2 col ── */
   .lo-grid { grid-template-columns: repeat(2, 1fr); }
