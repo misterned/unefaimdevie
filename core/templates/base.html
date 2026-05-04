@@ -40,21 +40,19 @@
 
       <nav aria-label="Navigation principale" id="lo-nav">
         <ul class="lo-header__nav">
-          <li><a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Accueil</a></li>
-          {% for cat in nav_categories %}
-          <li><span class="lo-header__nav-sep"></span></li>
-          <li><a href="{% url 'post-list' %}?categorie={{ cat }}" {% if request.GET.categorie == cat %}class="active"{% endif %}>{{ cat }}</a></li>
-          {% endfor %}
-          <li><span class="lo-header__nav-sep"></span></li>
-          <li><a href="{% url 'post-list' %}" {% if request.resolver_match.url_name == 'post-list' and not request.GET.categorie %}class="active"{% endif %}>Tous les articles</a></li>
-          <li><span class="lo-header__nav-sep"></span></li>
-          <li><a href="{% url 'ad-list' %}" {% if request.resolver_match.url_name == 'ad-list' %}class="active"{% endif %}>Publicités</a></li>
+            <li><a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Accueil</a></li>
+            <li><span class="lo-header__nav-sep"></span></li>
+            <li><a href="{% url 'post-list' %}?categorie=Vie locale" {% if request.GET.categorie == 'Vie locale' %}class="active"{% endif %}>Vie locale</a></li>
+            <li><span class="lo-header__nav-sep"></span></li>
+            <li><a href="{% url 'post-list' %}?categorie=Culture" {% if request.GET.categorie == 'Culture' %}class="active"{% endif %}>Culture</a></li>
+            <li><span class="lo-header__nav-sep"></span></li>
+            <li><a href="{% url 'post-list' %}?categorie=Mer" {% if request.GET.categorie == 'Mer' %}class="active"{% endif %}>Mer</a></li>
         </ul>
       </nav>
 
-      <div class="lo-header__tagline">
-        <span class="lo-header__tagline-place">Le Croisic<br /></span>Webzine où l'on vit d'humour et d'eau salée
-      </div>
+        <div class="lo-header__tagline">
+          Vivre d'humour et d'eau salée
+        </div>
 
     </div>
   </header>
