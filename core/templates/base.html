@@ -47,6 +47,10 @@
             <li><a href="{% url 'post-list' %}?categorie=Culture" {% if request.GET.categorie == 'Culture' %}class="active"{% endif %}>Culture</a></li>
             <li><span class="lo-header__nav-sep"></span></li>
             <li><a href="{% url 'post-list' %}?categorie=Mer" {% if request.GET.categorie == 'Mer' %}class="active"{% endif %}>Mer</a></li>
+            <li><span class="lo-header__nav-sep"></span></li>
+            <li><a href="{% url 'post-list' %}" {% if request.resolver_match.url_name == 'post-list' and not request.GET.categorie %}class="active"{% endif %}>Tous les articles</a></li>
+            <li><span class="lo-header__nav-sep"></span></li>
+            <li><a href="{% url 'ad-list' %}" {% if request.resolver_match.url_name == 'ad-list' %}class="active"{% endif %}>Publicités</a></li>
         </ul>
       </nav>
 
