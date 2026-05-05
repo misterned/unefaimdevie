@@ -3,6 +3,26 @@ from django import forms
 from .models import Advertisement, Comment, Post
 
 
+class QuillWidget(forms.Textarea):
+    """Textarea remplacé par l'éditeur Quill au rendu."""
+
+    def __init__(self, toolbar='simple', *args, **kwargs):
+        self.toolbar = toolbar
+        super().__init__(*args, **kwargs)
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super().build_attrs(base_attrs, extra_attrs)
+        attrs['data-quill'] = self.toolbar
+        return attrs
+
+    class Media:
+        css = {'all': ('https://cdn.quilljs.com/1.3.7/quill.snow.css',)}
+        js = (
+            'https://cdn.quilljs.com/1.3.7/quill.min.js',
+            'core/js/quill-init.js',
+        )
+
+
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
@@ -19,7 +39,7 @@ class PostForm(forms.ModelForm):
             "video_file",
         ]
         widgets = {
-            "body": forms.Textarea(attrs={"data-quill": "rich"}),
+            "body": QuillWidget(toolbar='rich'),
         }
 
     def clean_title(self):
@@ -34,7 +54,7 @@ class AdvertisementForm(forms.ModelForm):
         model = Advertisement
         fields = ["title", "merchant", "image", "text", "price"]
         widgets = {
-            "text": forms.Textarea(attrs={"data-quill": "simple"}),
+            "text": QuillWidget(toolbar='simple'),
         }
 
     def __init__(self, *args, **kwargs):
