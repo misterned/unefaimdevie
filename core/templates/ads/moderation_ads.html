@@ -9,7 +9,7 @@
         <div class="card-body">
             <h2 class="h5">{{ ad.title }}</h2>
             <p class="text-muted small">Commerçant : {{ ad.merchant }}</p>
-            <p>{{ ad.text }}</p>
+            <div>{{ ad.text|safe }}</div>
             <div class="d-flex gap-2">
                 <form method="post" action="{% url 'moderation-ad-action' ad.pk 'approve' %}">
                     {% csrf_token %}

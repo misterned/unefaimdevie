@@ -20,7 +20,7 @@
       <div class="lo-ad-featured__body">
         <div class="lo-ad-featured__label">{{ ad.merchant }}</div>
         <h2 class="lo-ad-featured__title">{{ ad.title }}</h2>
-        <p class="lo-ad-featured__text">{{ ad.text }}</p>
+        <div class="lo-ad-featured__text">{{ ad.text|safe }}</div>
       </div>
     </div>
     {% empty %}

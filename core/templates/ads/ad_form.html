@@ -2,12 +2,59 @@
 
 {% block title %}Soumettre une publicité{% endblock %}
 
+{% block extra_css %}
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<style>
+  .ql-toolbar.ql-snow { border-radius: .25rem .25rem 0 0; border-color: #ced4da; background: #fafaf8; }
+  .ql-container.ql-snow { border-radius: 0 0 .25rem .25rem; border-color: #ced4da; font-family: Lora, Georgia, serif; font-size: 1rem; }
+  .ql-editor { min-height: 160px; }
+  .ql-editor p { margin-bottom: .5em; }
+</style>
+{% endblock %}
+
 {% block content %}
 <h1 class="h3 mb-4">Proposer une publicité</h1>
 <p class="text-muted">Soumettez votre publicité sans créer de compte. Elle sera validée avant publication.</p>
-<form method="post" enctype="multipart/form-data" class="card card-body">
+<form method="post" enctype="multipart/form-data" class="card card-body" id="ad-form">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Envoyer</button>
 </form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+(function () {
+  var toolbars = {
+    simple: [
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link'],
+      ['clean']
+    ]
+  };
+
+  document.querySelectorAll('textarea[data-quill]').forEach(function (textarea) {
+    var mode = textarea.getAttribute('data-quill');
+    var wrapper = document.createElement('div');
+    textarea.parentNode.insertBefore(wrapper, textarea);
+    textarea.style.display = 'none';
+
+    var quill = new Quill(wrapper, {
+      theme: 'snow',
+      modules: { toolbar: toolbars[mode] || toolbars.simple }
+    });
+
+    if (textarea.value) {
+      quill.root.innerHTML = textarea.value;
+    }
+
+    textarea.closest('form').addEventListener('submit', function () {
+      var html = quill.root.innerHTML;
+      textarea.value = (html === '<p><br></p>') ? '' : html;
+    });
+  });
+})();
+</script>
 {% endblock %}

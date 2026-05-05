@@ -1,7 +1,10 @@
 from django.urls import path
 
 from .views import (
+    AdvertisementCreateView,
     AdvertisementListView,
+    AdvertisementModerationActionView,
+    AdvertisementModerationListView,
     CommentCreateView,
     CommentModerationActionView,
     CommentModerationListView,
@@ -24,4 +27,11 @@ urlpatterns = [
         name="moderation-comment-action",
     ),
     path("ads/", AdvertisementListView.as_view(), name="ad-list"),
+    path("ads/submit/", AdvertisementCreateView.as_view(), name="ad-submit"),
+    path("moderation/ads/", AdvertisementModerationListView.as_view(), name="moderation-ads"),
+    path(
+        "moderation/ads/<int:pk>/<str:action>/",
+        AdvertisementModerationActionView.as_view(),
+        name="moderation-ad-action",
+    ),
 ]

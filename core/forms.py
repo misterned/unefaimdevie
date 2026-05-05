@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Comment, Post
+from .models import Advertisement, Comment, Post
 
 
 class PostForm(forms.ModelForm):
@@ -18,12 +18,28 @@ class PostForm(forms.ModelForm):
             "video_url",
             "video_file",
         ]
+        widgets = {
+            "body": forms.Textarea(attrs={"data-quill": "rich"}),
+        }
 
     def clean_title(self):
         title = self.cleaned_data["title"].strip()
         if len(title) > 150:
             raise forms.ValidationError("Le titre ne doit pas dépasser 150 caractères.")
         return title
+
+
+class AdvertisementForm(forms.ModelForm):
+    class Meta:
+        model = Advertisement
+        fields = ["title", "merchant", "image", "text", "price"]
+        widgets = {
+            "text": forms.Textarea(attrs={"data-quill": "simple"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["text"].max_length = None
 
 
 class CommentForm(forms.ModelForm):
