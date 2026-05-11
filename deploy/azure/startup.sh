@@ -41,4 +41,13 @@ PY
 
 "$PYTHON_BIN" manage.py collectstatic --noinput
 "$PYTHON_BIN" manage.py migrate --noinput
-exec gunicorn croisicwebzine.wsgi:application --bind=0.0.0.0:${PORT:-8000}
+# Nombre de workers : WEB_CONCURRENCY si défini, sinon 2×CPU+1 (min 3, max 8)
+WORKERS=${WEB_CONCURRENCY:-$("$PYTHON_BIN" -c "import os; print(min(max(2*(os.cpu_count() or 1)+1, 3), 8))")}
+echo "[startup] gunicorn workers: ${WORKERS}"
+
+exec gunicorn croisicwebzine.wsgi:application \
+    --bind=0.0.0.0:${PORT:-8000} \
+    --workers=${WORKERS} \
+    --timeout=60 \
+    --max-requests=1000 \
+    --max-requests-jitter=100
