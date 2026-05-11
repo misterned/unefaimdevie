@@ -8,3 +8,7 @@ __pycache__/
 *.pyc
 *.pyo
 .DS_Store
+
+# Tests de performance locaux (Locust)
+locustfile.py
+.locust_history

@@ -37,10 +37,13 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        qs = Post.objects.filter(status=Post.Status.PUBLISHED).order_by("-created_at")
-        context["hero_post"] = qs.first()
-        context["recent_posts"] = qs[:5]
-        context["mosaic_posts"] = qs[5:9]
+        posts = list(
+            Post.objects.filter(status=Post.Status.PUBLISHED)
+            .order_by("-created_at")[:9]
+        )
+        context["hero_post"] = posts[0] if posts else None
+        context["recent_posts"] = posts[:5]
+        context["mosaic_posts"] = posts[5:9]
         context["featured_ad"] = Advertisement.objects.filter(
             status=Advertisement.Status.APPROVED, featured=True
         ).first()
