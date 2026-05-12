@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Count
 
 from .models import Post
@@ -17,4 +18,5 @@ def role_flags(request):
     return {
         "is_animateur": user_is_animateur(user),
         "nav_categories": list(nav_categories),
+        "appinsights_connection_string": getattr(settings, "APPLICATIONINSIGHTS_CONNECTION_STRING", ""),
     }

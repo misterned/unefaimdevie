@@ -120,5 +120,23 @@
   </script>
 
   {% block extra_js %}{% endblock %}
+
+  {% if appinsights_connection_string %}
+  <script>
+    window.addEventListener('load', function () {
+      var s = document.createElement('script');
+      s.src = 'https://js.monitor.azure.com/scripts/b/ai.3.gbl.min.js';
+      s.onload = function () {
+        var ai = new Microsoft.ApplicationInsights.ApplicationInsights({
+          config: { connectionString: '{{ appinsights_connection_string|escapejs }}' }
+        });
+        ai.loadAppInsights();
+        ai.trackPageView();
+      };
+      document.head.appendChild(s);
+    });
+  </script>
+  {% endif %}
+
 </body>
 </html>
