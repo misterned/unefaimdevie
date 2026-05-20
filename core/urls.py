@@ -14,6 +14,8 @@ from .views import (
     PostUpdateView,
 )
 
+from .urls_email import urlpatterns as email_urlpatterns
+
 urlpatterns = [
     path("posts/", PostListView.as_view(), name="post-list"),
     path("post/create/", PostCreateView.as_view(), name="post-create"),
@@ -35,3 +37,4 @@ urlpatterns = [
         name="moderation-ad-action",
     ),
 ]
+urlpatterns += email_urlpatterns

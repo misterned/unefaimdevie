@@ -135,4 +135,22 @@
 
 </div>
 
+<!-- ══ NOTIFICATION EMAIL EN BAS DE PAGE ══ -->
+<div class="lo-section-wrap" style="max-width:420px; margin:48px auto 0 auto; padding-bottom:32px;">
+  <div style="background:var(--lo-cream); border-radius:12px; padding:28px 24px; box-shadow:0 2px 8px rgba(0,0,0,0.04); text-align:center;">
+    <h2 style="font-size:1.2em; margin-bottom:14px;">Recevez un email à chaque nouvel article</h2>
+    <form method="post" action="{% url 'email-subscribe' %}" style="display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap;">
+      {% csrf_token %}
+      <input name="email" type="email" maxlength="80" required placeholder="votre@email.fr" class="lo-email-input" style="padding:8px 12px; border-radius:6px; border:1px solid #ccc; font-size:1em;" />
+      <button type="submit" class="lo-btn" style="padding:8px 18px; border-radius:6px; background:var(--lo-terra); color:white; border:none; font-size:1em;">S'inscrire</button>
+    </form>
+    <div style="margin-top:10px; font-size:0.95em;">
+      <a href="{% url 'email-unsubscribe' %}">Se désinscrire</a>
+    </div>
+    <div style="margin-top:8px; color:var(--lo-ink-lt); font-size:0.92em;">Vous recevrez un email à chaque nouvel article. Désinscription possible à tout moment.</div>
+  </div>
+</div>
+
+<!-- ══ NOTIFICATION SMS EN BAS DE PAGE ══ -->
+
 {% endblock %}

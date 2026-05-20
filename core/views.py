@@ -107,10 +107,17 @@ class PostCreateView(AnimateurRequiredMixin, CreateView):
     template_name = "posts/post_form.html"
 
     def form_valid(self, form):
-        """Assigne l'auteur et affiche un message de succès."""
+        """Assigne l'auteur, affiche un message de succès et notifie les abonnés email si publié."""
         form.instance.author = self.request.user
+        response = super().form_valid(form)
+        if form.instance.status == Post.Status.PUBLISHED:
+            try:
+                from core.notify import notify_new_post
+                notify_new_post(form.instance)
+            except Exception:
+                pass
         messages.success(self.request, "Article créé avec succès.")
-        return super().form_valid(form)
+        return response
 
 
 class PostUpdateView(AnimateurRequiredMixin, UpdateView):

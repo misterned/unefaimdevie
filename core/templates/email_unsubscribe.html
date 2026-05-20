@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="lo-section-wrap" style="max-width:420px; margin:48px auto;">
+  <h2 style="font-size:1.3em; margin-bottom:18px;">Se désinscrire des notifications email</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="lo-btn lo-btn--danger">Se désinscrire</button>
+  </form>
+  <div style="margin-top:18px; font-size:0.95em;">
+    <a href="{% url 'email-subscribe' %}">Retour à l'inscription</a>
+  </div>
+</div>
+{% endblock %}
