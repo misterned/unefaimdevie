@@ -1,3 +1,11 @@
+from .models_email import EmailSubscriber
+
+# Gestion des abonnés email dans l'admin
+@admin.register(EmailSubscriber)
+class EmailSubscriberAdmin(admin.ModelAdmin):
+    list_display = ("email", "subscribed", "created_at")
+    list_filter = ("subscribed", "created_at")
+    search_fields = ("email",)
 """
 Configuration de l'interface d'administration Django pour les modèles principaux.
 """
