@@ -265,4 +265,18 @@ CSRF_COOKIE_SECURE = _env_bool("CSRF_COOKIE_SECURE", False)
 # -------------------------------------------------------------
 # CONFIGURATION EMAIL (pour notifications/modération)
 # -------------------------------------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Pour test local, affiche les mails dans la console
+
+# Email expéditeur par défaut (à personnaliser)
+DEFAULT_FROM_EMAIL = "Webzine Une faim de vie <noreply@unefaimdevie.fr>"
+
+# URL du site (pour les liens dans les emails)
+SITE_URL = "https://unefaimdevie.fr"
+
+# Exemple de configuration SMTP pour envoi réel (décommentez et adaptez si besoin)
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = "votre@email.fr"
+# EMAIL_HOST_PASSWORD = "votre-mot-de-passe-app"
