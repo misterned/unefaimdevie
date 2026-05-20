@@ -1,3 +1,5 @@
+
+from django.contrib import admin
 from .models_email import EmailSubscriber
 
 # Gestion des abonnés email dans l'admin
