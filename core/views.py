@@ -64,7 +64,7 @@ class PostListView(ListView):
         categorie = self.request.GET.get("categorie")
         GROUPS = {
             "vie-locale": ["Météo", "Travaux", "Santé", "Conseil municipal", "Sport"],
-            "culture": ["Peinture", "Sculpture", "Lecture", "Cinéma", "Histoire", "Théâtre", "Conférence", "Musique", "SNSM"],
+            "culture": ["Peinture", "Sculpture", "Lecture", "Cinéma", "Histoire", "Théâtre", "Conférence", "Musique", "SNSM", "Gogo"],
             "mer": ["Voile", "Pêche", "Chantier naval"],
         }
         if groupe in GROUPS:
