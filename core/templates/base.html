@@ -60,6 +60,18 @@
             <li><span class="lo-header__nav-sep"></span></li>
             <li><a href="{% url 'ad-list' %}" {% if request.resolver_match.url_name == 'ad-list' %}class="active"{% endif %}>Publicités</a></li>
         </ul>
+          <ul class="lo-header__submenu">
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Peinture">Peinture</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Sculpture">Sculpture</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Lecture">Lecture</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Cinéma">Cinéma</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Histoire">Histoire</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Théâtre">Théâtre</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Conférence">Conférence</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Musique">Musique</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=SNSM">SNSM</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=culture&categorie=Gogo">Gogo</a></li>
+          </ul>
       </nav>
 
         <div class="lo-header__tagline">
