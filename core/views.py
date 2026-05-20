@@ -131,9 +131,18 @@ class PostUpdateView(AnimateurRequiredMixin, UpdateView):
         return can_manage_post(self.request.user, self.get_object())
 
     def form_valid(self, form):
-        """Affiche un message de succès à la modification."""
+        """Affiche un message de succès à la modification et notifie si passage à publié."""
+        old_status = self.get_object().status
+        response = super().form_valid(form)
+        new_status = form.instance.status
+        if old_status == Post.Status.DRAFT and new_status == Post.Status.PUBLISHED:
+            try:
+                from core.notify import notify_new_post
+                notify_new_post(form.instance)
+            except Exception:
+                pass
         messages.success(self.request, "Article modifié avec succès.")
-        return super().form_valid(form)
+        return response
 
 
 class CommentCreateView(CreateView):
