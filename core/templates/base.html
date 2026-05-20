@@ -13,6 +13,7 @@
 
   <!-- Design Lumière d'Ouest -->
   <link rel="stylesheet" href="{% static 'core/css/lumiere-ouest.css' %}" />
+  <link rel="stylesheet" href="{% static 'core/css/submenu.css' %}" />
 
   {% block extra_css %}{% endblock %}
 
@@ -43,6 +44,13 @@
             <li><a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Accueil</a></li>
             <li><span class="lo-header__nav-sep"></span></li>
             <li><a href="{% url 'post-list' %}?groupe=vie-locale" {% if request.GET.groupe == 'vie-locale' %}class="active"{% endif %}>Vie locale</a></li>
+            <ul class="lo-header__submenu">
+              <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Météo">Météo</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Travaux">Travaux</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Santé">Santé</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Conseil municipal">Conseil municipal</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Sport">Sport</a></li>
+            </ul>
             <li><span class="lo-header__nav-sep"></span></li>
             <li><a href="{% url 'post-list' %}?groupe=culture" {% if request.GET.groupe == 'culture' %}class="active"{% endif %}>Culture</a></li>
             <li><span class="lo-header__nav-sep"></span></li>
