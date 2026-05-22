@@ -102,18 +102,19 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
-if APPLICATIONINSIGHTS_CONNECTION_STRING:
-    try:
-        from azure.monitor.opentelemetry import configure_azure_monitor
-        configure_azure_monitor(
-            connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING,
-        )
-    except ImportError:
-        import logging as _log
-        _log.warning(
-            '[settings] azure-monitor-opentelemetry non disponible – '
-            'Application Insights désactivé pour ce démarrage.'
-        )
+# Désactivé : Application Insights Azure (provoquait un crash si le module n'est pas installé)
+# if APPLICATIONINSIGHTS_CONNECTION_STRING:
+#     try:
+#         from azure.monitor.opentelemetry import configure_azure_monitor
+#         configure_azure_monitor(
+#             connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING,
+#         )
+#     except ImportError:
+#         import logging as _log
+#         _log.warning(
+#             '[settings] azure-monitor-opentelemetry non disponible – '
+#             'Application Insights désactivé pour ce démarrage.'
+#         )
 
 ROOT_URLCONF = 'croisicwebzine.urls'
 
