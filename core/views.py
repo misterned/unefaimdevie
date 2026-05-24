@@ -108,14 +108,16 @@ class PostCreateView(AnimateurRequiredMixin, CreateView):
 
     def form_valid(self, form):
         """Assigne l'auteur, affiche un message de succès et notifie les abonnés email si publié."""
+        import logging
+        _log = logging.getLogger(__name__)
         form.instance.author = self.request.user
         response = super().form_valid(form)
         if form.instance.status == Post.Status.PUBLISHED:
             try:
                 from core.notify import notify_new_post
                 notify_new_post(form.instance)
-            except Exception:
-                pass
+            except Exception as e:
+                _log.error("Erreur lors de l'appel notify_new_post (création) : %s", e, exc_info=True)
         messages.success(self.request, "Article créé avec succès.")
         return response
 
@@ -132,6 +134,8 @@ class PostUpdateView(AnimateurRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """Affiche un message de succès à la modification et notifie si passage à publié."""
+        import logging
+        _log = logging.getLogger(__name__)
         old_status = self.get_object().status
         response = super().form_valid(form)
         new_status = form.instance.status
@@ -139,8 +143,8 @@ class PostUpdateView(AnimateurRequiredMixin, UpdateView):
             try:
                 from core.notify import notify_new_post
                 notify_new_post(form.instance)
-            except Exception:
-                pass
+            except Exception as e:
+                _log.error("Erreur lors de l'appel notify_new_post (édition) : %s", e, exc_info=True)
         messages.success(self.request, "Article modifié avec succès.")
         return response
 
