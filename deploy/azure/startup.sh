@@ -50,4 +50,7 @@ exec gunicorn croisicwebzine.wsgi:application \
     --workers=${WORKERS} \
     --timeout=60 \
     --max-requests=1000 \
-    --max-requests-jitter=100
+    --max-requests-jitter=100 \
+    --access-logfile - \
+    --error-logfile - \
+    --log-level info
