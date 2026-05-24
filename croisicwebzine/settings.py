@@ -1,6 +1,23 @@
 # -------------------------------------------------------------
 # LOGGING DJANGO POUR AZURE/DEBUG
 # -------------------------------------------------------------
+import os as _os
+
+_log_handlers = ['console']
+_log_extra: dict = {}
+
+# Sur Azure App Service, /home/LogFiles/ est persistant et lisible via Kudu.
+# On écrit aussi dans un fichier pour pouvoir le télécharger facilement.
+if _os.path.isdir('/home/LogFiles'):
+    _log_handlers.append('file')
+    _log_extra = {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': '/home/LogFiles/django.log',
+            'encoding': 'utf-8',
+        },
+    }
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -8,9 +25,10 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
+        **_log_extra,
     },
     'root': {
-        'handlers': ['console'],
+        'handlers': _log_handlers,
         'level': 'INFO',
     },
 }
