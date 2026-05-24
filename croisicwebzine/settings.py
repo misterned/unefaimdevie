@@ -310,7 +310,7 @@ EMAIL_HOST = "smtp.mail.yahoo.com"  # À adapter selon votre fournisseur
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "nedelec.stephane@yahoo.fr"  # À personnaliser
-EMAIL_HOST_PASSWORD = "maz7agran"  # À personnaliser
+EMAIL_HOST_PASSWORD = _env_str("EMAIL_HOST_PASSWORD")
 
 # Email expéditeur par défaut (à personnaliser)
 DEFAULT_FROM_EMAIL = "Webzine Une faim de vie <noreply@unefaimdevie.fr>"
