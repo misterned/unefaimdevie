@@ -310,11 +310,11 @@ CSRF_COOKIE_SECURE = _env_bool("CSRF_COOKIE_SECURE", False)
 
 # --- CONFIGURATION SMTP POUR ENVOI REEL ---
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.mail.yahoo.com"
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False
-EMAIL_HOST_USER = "nedelec.stephane@yahoo.fr"  # À personnaliser
+EMAIL_HOST = _env_str("EMAIL_HOST", "smtp-relay.brevo.com")
+EMAIL_PORT = int(_env_str("EMAIL_PORT", "587"))
+EMAIL_USE_SSL = _env_bool("EMAIL_USE_SSL", False)
+EMAIL_USE_TLS = _env_bool("EMAIL_USE_TLS", True)
+EMAIL_HOST_USER = _env_str("EMAIL_HOST_USER", "nedelec.stephane@yahoo.fr")
 EMAIL_HOST_PASSWORD = _env_str("EMAIL_HOST_PASSWORD")
 
 # Email expéditeur par défaut (à personnaliser)
