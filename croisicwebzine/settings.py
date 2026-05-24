@@ -87,6 +87,9 @@ if azure_media_enabled:
 APPLICATIONINSIGHTS_CONNECTION_STRING = _env_str("APPLICATIONINSIGHTS_CONNECTION_STRING")
 
 MIDDLEWARE = [
+    # Doit être EN PREMIER pour intercepter la sonde Azure avant ALLOWED_HOSTS
+    'core.middleware.AzureHealthCheckMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
 
     # Whitenoise pour servir les statiques en production

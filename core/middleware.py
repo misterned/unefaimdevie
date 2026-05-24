@@ -3,6 +3,24 @@ Middleware pour mesurer le temps de réponse des fichiers médias (images/vidéo
 et envoyer la métrique à Application Insights via OpenCensus.
 """
 import time
+from django.http import HttpResponse
+
+
+class AzureHealthCheckMiddleware:
+    """
+    Répond 200 OK à la sonde de santé interne d'Azure App Service
+    (/robots933456.txt) avant que SecurityMiddleware ne valide ALLOWED_HOSTS.
+    Sans ce middleware, Django lève DisallowedHost car la sonde utilise
+    l'IP interne du conteneur (169.254.x.x) comme header Host.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.path == "/robots933456.txt":
+            return HttpResponse("ok", content_type="text/plain")
+        return self.get_response(request)
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 

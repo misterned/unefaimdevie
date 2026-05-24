@@ -26,18 +26,6 @@ if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
 fi
 
 "$PYTHON_BIN" --version
-"$PYTHON_BIN" -m pip --version
-"$PYTHON_BIN" -m pip show django gunicorn whitenoise dj-database-url || true
-"$PYTHON_BIN" -m pip show django-storages azure-storage-blob || true
-"$PYTHON_BIN" -m pip show azure-monitor-opentelemetry || true
-"$PYTHON_BIN" - <<'PY'
-import os
-print("[startup] AZURE_STORAGE_ACCOUNT_NAME set:", bool(os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")))
-print("[startup] AZURE_STORAGE_CONTAINER:", os.environ.get("AZURE_STORAGE_CONTAINER", ""))
-print("[startup] USE_AZURE_BLOB_MEDIA:", os.environ.get("USE_AZURE_BLOB_MEDIA", ""))
-PY
-"$PYTHON_BIN" manage.py check --deploy || true
-"$PYTHON_BIN" manage.py shell -c "from django.conf import settings; print('[startup] default storage backend:', settings.STORAGES['default']['BACKEND']); print('[startup] MEDIA_URL:', settings.MEDIA_URL)" || true
 
 "$PYTHON_BIN" manage.py collectstatic --noinput
 "$PYTHON_BIN" manage.py migrate --noinput
