@@ -45,6 +45,19 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ("status", "category", "created_at")
     prepopulated_fields = {"slug": ("title",)}
 
+    def save_model(self, request, obj, form, change):
+        """Notifie les abonnés email lors du passage brouillon → publié."""
+        import logging
+        _log = logging.getLogger(__name__)
+        old_status = Post.objects.filter(pk=obj.pk).values_list("status", flat=True).first() if change else None
+        super().save_model(request, obj, form, change)
+        if obj.status == Post.Status.PUBLISHED and old_status != Post.Status.PUBLISHED:
+            try:
+                from core.notify import notify_new_post
+                notify_new_post(obj)
+            except Exception as e:
+                _log.error("Erreur notify_new_post (admin) : %s", e, exc_info=True)
+
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
