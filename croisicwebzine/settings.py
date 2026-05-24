@@ -290,6 +290,10 @@ if azure_media_enabled:
         )
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://unefaimdevie.fr",
+    "https://www.unefaimdevie.fr",
+    "https://unefaimdevie-g4cwb3d8hsc9htb9.francecentral-01.azurewebsites.net",
+] + [
     origin.strip()
     for origin in _env_str("CSRF_TRUSTED_ORIGINS", "").split(",")
     if origin.strip()
