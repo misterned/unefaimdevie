@@ -11,7 +11,7 @@ def notify_new_post(post):
     url = f"{settings.SITE_URL}{post.get_absolute_url()}"
     message = f"Un nouvel article vient d'être publié sur une faim de vie au Croisic : {post.title}\n\nLire l'article : {url}"
     html_message = (
-        f"<p>Chers affamés du Croisic</p>"
+        f"<p>Chers affamé(e)s du Croisic</p>"
         f"<p>Un nouvel article vient d'être publié sur <em>Une faim de vie au Croisic</em> :</p>"
         f"<p><strong>{post.title}</strong></p>"
         f"<p><a href=\"{url}\">Lire l'article</a></p>"
