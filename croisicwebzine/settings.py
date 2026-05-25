@@ -318,7 +318,7 @@ EMAIL_HOST_USER = _env_str("EMAIL_HOST_USER", "nedelec.stephane@yahoo.fr")
 EMAIL_HOST_PASSWORD = _env_str("EMAIL_HOST_PASSWORD")
 
 # Email expéditeur par défaut (à personnaliser)
-DEFAULT_FROM_EMAIL = "Webzine Une faim de vie <noreply@unefaimdevie.fr>"
+DEFAULT_FROM_EMAIL = _env_str("DEFAULT_FROM_EMAIL", "Webzine Une faim de vie <noreply@unefaimdevie.fr>")
 
 # URL du site (pour les liens dans les emails)
 SITE_URL = "https://unefaimdevie.fr"
