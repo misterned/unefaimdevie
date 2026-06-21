@@ -50,6 +50,7 @@
               <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Santé">Santé</a></li>
               <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Conseil municipal">Conseil municipal</a></li>
               <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Sport">Sport</a></li>
+              <li><a href="{% url 'post-list' %}?groupe=vie-locale&categorie=Faune">Faune</a></li>
             </ul>
             <li><span class="lo-header__nav-sep"></span></li>
             <li><a href="{% url 'post-list' %}?groupe=culture" {% if request.GET.groupe == 'culture' %}class="active"{% endif %}>Culture</a></li>
