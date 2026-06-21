@@ -50,6 +50,13 @@ class HomeView(ListView):
         return context
 
 
+GROUPS = {
+    "vie-locale": ["Météo", "Travaux", "Santé", "Conseil municipal", "Sport", "Faune"],
+    "culture": ["Peinture", "Sculpture", "Lecture", "Cinéma", "Histoire", "Théâtre", "Conférence", "Musique", "SNSM", "Gogo"],
+    "mer": ["Voile", "Pêche", "Chantier naval"],
+}
+
+
 class PostListView(ListView):
     """Vue liste des posts publiés, avec filtrage par catégorie."""
     model = Post
@@ -57,26 +64,22 @@ class PostListView(ListView):
     context_object_name = "posts"
     paginate_by = 9
 
-
     def get_queryset(self):
         qs = Post.objects.filter(status=Post.Status.PUBLISHED)
         groupe = self.request.GET.get("groupe")
         categorie = self.request.GET.get("categorie")
-        GROUPS = {
-            "vie-locale": ["Météo", "Travaux", "Santé", "Conseil municipal", "Sport"],
-            "culture": ["Peinture", "Sculpture", "Lecture", "Cinéma", "Histoire", "Théâtre", "Conférence", "Musique", "SNSM", "Gogo"],
-            "mer": ["Voile", "Pêche", "Chantier naval"],
-        }
         if groupe in GROUPS:
             qs = qs.filter(category__in=GROUPS[groupe])
-        elif categorie:
+        if categorie:
             qs = qs.filter(category__iexact=categorie)
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        groupe = self.request.GET.get("groupe", "")
         context["current_category"] = self.request.GET.get("categorie", "")
-        context["current_group"] = self.request.GET.get("groupe", "")
+        context["current_group"] = groupe
+        context["group_categories"] = GROUPS.get(groupe, [])
         return context
 
 

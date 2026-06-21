@@ -12,13 +12,26 @@
   <!-- Titre de rubrique -->
   <div class="lo-section-header">
     <span class="lo-section-header__label">
-      {% if current_category %}{{ current_category }}{% else %}Tous les articles{% endif %}
+      {% if current_category %}{{ current_category }}{% elif current_group == 'vie-locale' %}Vie locale{% elif current_group == 'culture' %}Culture{% elif current_group == 'mer' %}Mer{% else %}Tous les articles{% endif %}
     </span>
     <div class="lo-section-header__rule"></div>
     {% if current_category %}
-      <a href="{% url 'post-list' %}" class="lo-section-header__link">Tout voir →</a>
+      <a href="?groupe={{ current_group }}" class="lo-section-header__link">Tout voir →</a>
     {% endif %}
   </div>
+
+  <!-- Filtres par catégorie -->
+  {% if group_categories %}
+  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:32px;">
+    {% for cat in group_categories %}
+      <a href="?groupe={{ current_group }}&categorie={{ cat }}"
+         style="padding:6px 14px; border-radius:20px; font-size:13px; text-decoration:none; font-family:var(--lo-font-body); letter-spacing:0.05em;
+                {% if current_category == cat %}background:var(--lo-terra); color:white;{% else %}background:var(--lo-sand); color:var(--lo-ink);{% endif %}">
+        {{ cat }}
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
 
   <!-- Grille -->
   <div class="lo-grid" style="margin-bottom: 64px;">

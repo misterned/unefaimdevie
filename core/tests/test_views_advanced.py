@@ -40,3 +40,52 @@ def test_post_list_view_only_published():
     response = client.get(url)
     assert b"T2" in response.content
     assert b"T1" not in response.content
+
+
+@pytest.mark.django_db
+def test_post_list_view_filters_by_group_and_category():
+    user = get_user_model().objects.create(username="author3")
+    Post.objects.create(
+        title="Faune visible",
+        slug="faune-visible",
+        author=user,
+        body="B",
+        category="Faune",
+        status=Post.Status.PUBLISHED,
+    )
+    Post.objects.create(
+        title="Meteo cachee",
+        slug="meteo-cachee",
+        author=user,
+        body="B",
+        category="Météo",
+        status=Post.Status.PUBLISHED,
+    )
+
+    client = Client()
+    url = reverse("post-list")
+    response = client.get(url, {"groupe": "vie-locale", "categorie": "Faune"})
+
+    assert response.status_code == 200
+    assert b"Faune visible" in response.content
+    assert b"Meteo cachee" not in response.content
+
+
+@pytest.mark.django_db
+def test_post_list_view_vie_locale_group_includes_faune():
+    user = get_user_model().objects.create(username="author4")
+    Post.objects.create(
+        title="Faune groupe",
+        slug="faune-groupe",
+        author=user,
+        body="B",
+        category="Faune",
+        status=Post.Status.PUBLISHED,
+    )
+
+    client = Client()
+    url = reverse("post-list")
+    response = client.get(url, {"groupe": "vie-locale"})
+
+    assert response.status_code == 200
+    assert b"Faune groupe" in response.content
